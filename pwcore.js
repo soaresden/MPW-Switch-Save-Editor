@@ -451,9 +451,14 @@
       const t = DEV[kind], dv = this.dv, n = dv.getUint32(t.count, true), res = [];
       for (let i = 0; i < n; i++) {
         const o = t.table + i * t.size;
-        res.push({ index: i, id: dv.getUint32(o, true), state: dv.getUint32(o + 4, true), progress: dv.getUint32(o + 8, true) });
+        res.push({ index: i, id: dv.getUint32(o, true), state: dv.getUint32(o + 4, true), progress: dv.getUint32(o + 8, true), qty: dv.getUint32(o + 12, true) });
       }
       return res;
+    }
+    /** Quantity held, at +0x0C of a development record (the number printed in the R&D grid). */
+    setDevQty(kind, index, v) {
+      const t = DEV[kind];
+      this.dv.setUint32(t.table + index * t.size + 12, Math.max(0, Math.min(9999, v | 0)) >>> 0, true);
     }
     finishDevelopments() {
       let n = 0;

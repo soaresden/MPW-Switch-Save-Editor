@@ -2,6 +2,12 @@
 
 Save editor for **METAL GEAR SOLID: Peace Walker – Master Collection Version** on **Nintendo Switch**.
 
+<h2 align="center"><a href="https://soaresden.github.io/MPW-Switch-Save-Editor/">▶ Open the editor</a></h2>
+
+<p align="center">
+Nothing to install, nothing to upload — it runs entirely in your browser and your save never leaves your computer.
+</p>
+
 > ⚠️ Work in progress. Always keep a backup of your save (Checkpoint / JKSV) before writing an edited one.
 
 ## Status

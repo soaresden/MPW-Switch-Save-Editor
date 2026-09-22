@@ -68,6 +68,51 @@ Game variable 39 holds the time of the last mission played (same unit).
 Both tables are covered by the byte-sum check stored at 0x170.
 Weapon id 186 = Stun Grenade (seen in development at 85 % then 90 %).
 
+## R&D item table — record layout and segments
+
+Each record of the items table (`0xE300`, 380 records of `0x18`) is six little-endian u32:
+
+| offset | meaning |
+|---|---|
+| `+0x00` | id (always record index + 1; the table is dense) |
+| `+0x04` | state — `1` locked / not developed, `2` in progress, `3` developed |
+| `+0x08` | progress in % (`100` when state is 3) |
+| `+0x0C` | **quantity held** |
+| `+0x10` | flags (`0x10000`, `0x40001`, `0x50001`… seen; meaning unknown) |
+| `+0x14` | always 0 |
+
+The weapons table (`0xBD80`, 253 records of `0x1C`) has the same first four fields plus
+two more u32 and a trailing zero.
+
+The quantity at `+0x0C` is what identifies a record: it is the number printed under the icon
+in the in-game R&D grid (`X9999`, `X8201`…). Matching those printed numbers against the table
+is how the segments below were established, from ten captures of **R&D → Objets → TOUS**:
+
+| ids | contents |
+|---|---|
+| `1 – 219` | key items: blueprints ("Spécifications de conception"), uniforms, mission items. Quantity is 0 or 1. Ids `161–175` are 15 consecutive entries owned together — the 15 T-shirt uniforms. |
+| `220 – 338` | the developable items shown in the R&D grid, in grid order. |
+| `339 – 380` | high quantities (9999 and similar); not identified yet. |
+
+Confirmed anchors in the `220 – 338` segment:
+
+```
+220-222 Ration r1-r3      240-241 Curry Épicé r1-r2   242-243 Curry Délicieux r3-r4
+244     Curry Futur r5    245     Nachos              246-250 Maté r1-r5
+251     Soda citron       252     Soda zéro calorie   253     Eau de Cologne
+254-258 Récup. Fulton     264-267 Bouclier balistique 284-287 Love Box
+289-290 Char en carton    294     Char (étourdissant) 298     Char (fumigène)
+302-304 Boîte bombe       307     Boîte étourdissante 316-317 Trousse de soins
+```
+
+The grid's `TOUS` filter only lists families whose blueprint has been obtained, so the gaps
+between the anchors are the families still locked for that save. Families occupy a variable
+number of consecutive ids — one per rank that actually exists, not a fixed five.
+
+Note: the in-game grid draws Curry Épicé, Curry Délicieux and Curry Futur as three rows, but
+they are one contiguous five-rank family in the table.
+
+
 ## Garage vehicle record (0xA0 bytes, table at 0x115E0, count at 0x115D8)
 
 | Offset | Type | Content |
