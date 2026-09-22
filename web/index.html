@@ -16,7 +16,7 @@ button{background:var(--panel);color:var(--text);border:1px solid var(--line);bo
 button:hover{border-color:var(--accent)}
 button.primary{background:var(--accent);color:#1a1205;border-color:var(--accent);font-weight:600}
 button:disabled{opacity:.4;cursor:not-allowed}
-main{max-width:1100px;margin:0 auto;padding:24px}
+main{max-width:1440px;margin:0 auto;padding:24px}
 #drop{border:2px dashed var(--line);border-radius:12px;padding:48px 24px;text-align:center;color:var(--muted);cursor:pointer}
 #drop.hover{border-color:var(--accent);color:var(--text)}
 #drop strong{color:var(--text);display:block;font-size:18px;margin-bottom:6px}
@@ -55,9 +55,88 @@ th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06
 .stat input{width:100%;background:#0b0d0a;color:var(--text);border:1px solid var(--line);border-radius:6px;padding:5px 8px;font:inherit}
 h3{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:16px 0 6px}
 @media (max-width:760px){.solwrap{grid-template-columns:1fr}}
+.gtabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px}
+.gtabs button{padding:6px 10px;font-size:13px;background:#262b22;border-color:#3a4034}
+.gtabs button.on{background:#e6e2d3;color:#15170f;border-color:#e6e2d3;font-weight:600}
+.gcount{margin-left:auto;font:700 20px/1 ui-monospace,monospace;letter-spacing:.05em;align-self:center}
+.gtable-wrap{max-height:560px;overflow:auto;border-radius:6px}
+.gtable{border-collapse:separate;border-spacing:0 3px;font-family:ui-monospace,Menlo,Consolas,monospace;letter-spacing:.06em}
+.gtable th{position:sticky;top:0;background:#f1eee4;color:#6f6c61;text-align:center;font-weight:600;cursor:pointer;padding:9px 8px;border-left:2px solid #d8d4c7;user-select:none;white-space:nowrap}
+.gtable th.l,.gtable td.l{text-align:left}
+.gtable th.sorted{color:#15170f}
+.gtable th.sorted::after{content:attr(data-arrow);color:#c0271f}
+.gtable td{background:#34372f;color:#f1eee4;text-align:center;padding:7px 8px;border-left:2px solid #4a4d43;border-bottom:none;white-space:nowrap}
+.gtable tr:hover td{background:#40443a}
+.gtable tr.on td{background:#a3221d}
+.gtable .tag{display:inline-block;background:#d8d4c7;color:#15170f;font-size:11px;font-weight:700;padding:1px 4px;margin-right:8px}
+.gtable .g{font-weight:700}
+.reft td{white-space:normal;text-align:left;vertical-align:top;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;letter-spacing:0;font-size:13px;line-height:1.4}
+.reft td.c{text-align:center;white-space:nowrap}
+.gtable td.rw{font-size:12px;line-height:1.35;white-space:normal;text-align:left;min-width:320px;max-width:460px;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;letter-spacing:0}
+.rw b{color:#f0c24b}.rw i{color:#b9b5a6;font-style:normal}
+.srk{display:inline-block;background:#f0c24b;color:#15170f;font-weight:700;font-size:11px;padding:0 4px;margin-right:4px}
+.soledit{margin-top:16px}
+.soledit:empty{display:none}
 #toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--panel);border:1px solid var(--accent);padding:10px 16px;border-radius:8px;display:none}
 .hidden{display:none}
 @media (max-width:640px){main{padding:16px}header{padding:12px 16px}.aitypes button{min-width:0;flex:1}}
+
+.langsw{display:flex;gap:0;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.langsw button{border:none;border-radius:0;padding:6px 10px;font-size:12px;background:transparent;color:var(--muted)}
+.langsw button.on{background:var(--accent);color:#1a1205;font-weight:700}
+.tree{display:grid;grid-template-columns:repeat(5,minmax(180px,1fr));gap:8px 26px;align-items:start;min-width:980px}
+.tnode{position:relative;background:#1b2017;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:6px;padding:7px 9px;font-size:12px;line-height:1.35}
+.tnode b{display:block;font-size:13px;color:var(--text);font-weight:600}
+.tnode .meta{color:var(--muted)}
+.tnode .cost{color:var(--accent2)}
+.tnode.bp{border-left-color:#d7c832}
+.tnode.skill{border-left-color:#d9588f}
+.tnode .from{color:#8d8a7e;font-size:11px;display:block}
+.tnode.link::before{content:'';position:absolute;left:-26px;top:50%;width:26px;border-top:1px solid #3c4436}
+.tnode.link::after{content:'▸';position:absolute;left:-9px;top:50%;transform:translateY(-52%);color:#3c4436}
+.treewrap{overflow:auto;max-height:660px;padding:4px 4px 10px}
+.legend{color:var(--muted);font-size:12px;display:flex;gap:16px;flex-wrap:wrap;margin:4px 0 10px}
+.legend span::before{content:'■ ';}
+.addrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-bottom:14px}
+.addbox label{display:block;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.addbox select{flex:1;min-width:0;background:#0b0d0a;color:var(--text);border:1px solid var(--line);border-radius:6px;padding:7px 9px;font:inherit}
+.addbox button{padding:7px 12px}
+.forinfo{border-left:3px solid var(--accent);padding:8px 12px;background:#1b2017;border-radius:0 6px 6px 0;margin:0 0 12px}
+.histo{display:flex;gap:3px;align-items:flex-end;height:64px;flex:1;min-width:280px}
+.hbar{flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%}
+.hbar span{display:block;width:100%;border-radius:2px 2px 0 0;min-height:2px}
+.hbar i{font-size:9px;color:var(--muted);text-align:center;font-style:normal;margin-top:2px}
+.zgrp{margin:10px 0 4px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.dot{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:7px;vertical-align:baseline}
+details.sect{border:1px solid #2c3324;border-radius:8px;background:#171b14;margin:0 0 10px}
+details.sect>summary{cursor:pointer;padding:10px 14px;font:700 14px/1.2 system-ui;letter-spacing:.03em;list-style:none;user-select:none}
+details.sect>summary::-webkit-details-marker{display:none}
+details.sect>summary::before{content:'▸';display:inline-block;width:16px;color:var(--accent)}
+details.sect[open]>summary::before{content:'▾'}
+details.sect>*:not(summary){padding:0 14px}
+details.sect>*:last-child{padding-bottom:12px}
+details.ch{border:1px solid #242a1e;border-radius:6px;margin:0 0 6px;background:#1b2017}
+details.ch>summary{cursor:pointer;padding:6px 12px;font:600 13px/1.2 system-ui;list-style:none}
+details.ch>summary::-webkit-details-marker{display:none}
+details.ch>summary::before{content:'▸';display:inline-block;width:14px;color:var(--muted)}
+details.ch[open]>summary::before{content:'▾'}
+details.ch .gtable-wrap{margin:0 8px 8px}
+.bpsrc{color:var(--muted);font-size:12px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin:0 0 14px}
+.card{background:#1b2017;border:1px solid #2c3324;border-radius:8px;padding:10px 12px}
+.card h4{margin:0 0 6px;font:700 12px/1.2 system-ui;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.card .big{font:700 22px/1 ui-monospace,monospace}
+.card .bar{height:6px;background:#2c3324;border-radius:3px;margin-top:8px;overflow:hidden}
+.card .bar i{display:block;height:100%;background:var(--accent)}
+.card.full .bar i{background:#7fbf5a}
+.card small{display:block;margin-top:6px;color:var(--muted);font-size:12px}
+.collgrp{margin:0 0 14px}
+.collgrp h4{margin:0 0 6px;font:700 13px/1.2 system-ui}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid #2c3324;border-radius:999px;padding:2px 10px;font-size:13px;background:#1b2017}
+.chip.ko{border-color:#5a2f2d;color:#e59b98}.chip.ok{border-color:#3a5a2d;color:#9ed37c}
+.sep{width:1px;align-self:stretch;background:#2c3324;margin:0 4px}
+.okv{color:#7fbf5a;font-weight:700}.kov{color:#d9534f;font-weight:700}.unk{color:var(--muted)}
 </style>
 </head>
 <body>
@@ -65,172 +144,166 @@ h3{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--mute
   <h1>MPW <span>Switch</span> Save Editor</h1>
   <span id="status"></span>
   <div class="spacer"></div>
-  <button id="btnOpen">Ouvrir…</button>
-  <button id="btnSave" class="primary" disabled>Enregistrer</button>
+  <div class="langsw"><button data-lang="en">EN</button><button data-lang="fr">FR</button></div>
+  <button id="btnOpen">Open…</button>
+  <button id="btnSave" class="primary" disabled>Save</button>
 </header>
 <main>
   <input type="file" id="file" class="hidden">
-  <div id="drop"><strong>Glisse ta sauvegarde ici</strong>ou clique pour choisir le fichier <code>STW…01</code> (dossier <code>MGS_PW_SAVE/ww</code> d'un export Checkpoint / JKSV)</div>
+  <div id="drop" data-i18n-html><strong>Drop your save here</strong>or click to pick one: the whole <b>JKSV zip</b>, or just the <code>STW…01</code> file (folder <code>MGS_PW_SAVE/ww</code> of a Checkpoint / JKSV export)</div>
 
   <div id="editor" class="hidden">
     <div class="tabs" id="tabs">
-      <button data-t="gen" class="on">Général</button>
-      <button data-t="ai">Mémoire IA</button>
-      <button data-t="sol">Soldats</button>
+      <button data-t="gen" class="on">General</button>
+      <button data-t="ai">AI Memory</button>
+      <button data-t="sol">Soldiers</button>
       <button data-t="veh">Garage</button>
       <button data-t="zeke">ZEKE</button>
+      <button data-t="mis">Missions</button>
+      <button data-t="ref">Unlocks</button>
+      <button data-t="done">100 %</button>
     </div>
 
     <section id="t-gen" class="panel">
       <div class="grid2">
-        <div class="field"><label>Joueur</label><div class="ro" id="gName"></div></div>
+        <div class="field"><label>Player</label><div class="ro dyn" id="gName"></div></div>
         <div class="field"><label>GMP</label><input id="gGmp" type="number" min="0" max="4294967295"></div>
-        <div class="field"><label>Fichier</label><div class="ro" id="gFile"></div></div>
+        <div class="field"><label>File</label><div class="ro dyn" id="gFile"></div></div>
       </div>
+      <h3>Player profile</h3>
+      <div class="grid2 dyn" id="gVars"></div>
+      <h3>R&amp;D</h3>
+      <div class="row"><span id="devInfo" class="note dyn" style="margin:0"></span><button id="devFinish">Finish the development in progress</button></div>
+    </section>
+
+    <section id="t-ref" class="panel hidden">
+      <div class="gtabs dyn" id="refTabs"></div>
+      <div class="filters"><input id="refSearch" placeholder="Search (name, mission, blueprint…)"><label style="display:flex;gap:6px;align-items:center;font-size:14px"><input type="checkbox" id="refOnlyS"> <span>S-rank rewards only</span></label><span id="refCount" class="gcount dyn"></span></div>
+      <div id="refTableWrap" class="gtable-wrap" style="max-height:640px"><table class="gtable reft"><thead id="refHead" class="dyn"></thead><tbody id="refBody" class="dyn"></tbody></table></div>
+      <div id="refTreeWrap" class="treewrap hidden">
+        <div class="legend"><span style="color:var(--accent)">standard</span><span style="color:#d7c832">needs a blueprint</span><span style="color:#d9588f">needs a staff skill</span></div>
+        <p class="note forinfo" data-i18n-html><b>FOR INFORMATION.</b> This tab unlocks nothing — it answers “what does the game want before this line shows up in R&amp;D?”. ✅ / ❌ are read from your save (mission finished, soldier with the skill); team levels are what you type below.</p>
+        <div class="row" id="devLevels" style="margin:0 0 10px;align-items:flex-end;gap:10px">
+          <div class="field"><label>R&amp;D</label><input id="histoLvl" data-lvl="rnd" type="number" min="0" max="99" placeholder="63" style="width:74px"></div>
+          <div class="field"><label>Mess Hall</label><input data-lvl="mess" type="number" min="0" max="99" style="width:74px"></div>
+          <div class="field"><label>Medical</label><input data-lvl="med" type="number" min="0" max="99" style="width:74px"></div>
+          <div class="field"><label>Intel</label><input data-lvl="intel" type="number" min="0" max="99" style="width:74px"></div>
+          <div class="field"><label>Combat Unit</label><input data-lvl="combat" type="number" min="0" max="99" style="width:74px"></div>
+          <label style="display:flex;gap:6px;align-items:center;font-size:14px;margin-left:8px"><input type="checkbox" id="devTodo" checked> <span>Only what I cannot get yet</span></label>
+        </div>
+        <div id="histo" class="histo dyn"></div>
+        <div class="gtabs dyn" id="treeCats"></div>
+        <div class="tree dyn" id="tree"></div>
+      </div>
+      <p class="note dyn" id="refNote"></p>
+    </section>
+
+    <section id="t-mis" class="panel hidden">
+      <div class="filters">
+        <button id="misAllS">All finished missions to S</button>
+        <button id="misAllSClean">S + 0 kill / 0 alert</button>
+        <span class="sep"></span>
+        <button data-mf="all" class="on">Everything</button>
+        <button data-mf="notA">Below A</button>
+        <button data-mf="notS">Below S</button>
+        <span id="misCount" class="gcount dyn"></span>
+      </div>
+      <div class="gtable-wrap"><table class="gtable">
+        <thead><tr><th>#</th><th class="l">MISSION</th><th>SHORTEST TIME</th><th>KILLS</th><th>ALERTS</th><th>RANK</th><th>REWARD RECEIVED?</th><th class="l">REWARDS</th></tr></thead>
+        <tbody id="misBody" class="dyn"></tbody></table></div>
+      <p class="note" data-i18n-html>Column <b>“REWARD RECEIVED?”</b>: I look in your save for the object the mission gives — ✅ found, ❌ missing, ❔ not detectable yet (most rewards are R&amp;D blueprints, which the save stores without a name).</p>
+      <p class="note" data-i18n-html>SOLO records, same as the in-game “Mission report” screen. “---” = not applicable (boss, vehicle…). Names marked ≈ are deduced from the Main Ops order and still need checking; missions never finished are not listed. Editing a rank only rewrites the record: the game hands out rewards at the end of a mission, so it will <b>not</b> grant an S-rank item afterwards.</p>
+    </section>
+
+    <section id="t-done" class="panel hidden">
+      <p class="note forinfo" data-i18n-html><b>FOR INFORMATION — completionist checklist.</b> Nothing here is unlocked or written: it only reads your save and tells you what is still missing for 100 %. The two Main Op goals are <b>every Main Op at A</b>, then <b>every Main Op at S</b> (BIG BOSS title).</p>
+      <div id="doneCards" class="cards dyn"></div>
+
+      <details class="sect" open><summary>Blueprints to collect</summary>
+        <p class="note" data-i18n-html>A <b>blueprint</b> (“Design Specs”) must be in your hands <b>before</b> the R&amp;D line even appears. ✅ = the mission that gives it is finished in your save. ⚠ = the mission is finished but the blueprint is an <b>S-rank reward</b> and you are not at S. ❌ = mission not done. 🔍 = picked up <b>inside</b> the stage, so finishing the mission is not enough — I cannot tell whether you actually grabbed it.</p>
+        <div class="filters">
+          <button data-bq="todo" class="on">Only the ones I am missing</button>
+          <button data-bq="all">Everything</button>
+          <input id="bpSearch" placeholder="Search a blueprint…">
+          <span id="bpCount" class="gcount dyn"></span>
+        </div>
+        <div id="doneBp" class="dyn"></div>
+      </details>
+
+      <details class="sect" open><summary>Main Ops — rank goals</summary>
+        <div class="filters">
+          <button data-dq="notA" class="on">Below A</button>
+          <button data-dq="notS">Below S</button>
+          <button data-dq="todo">Never finished</button>
+          <button data-dq="all">Everything</button>
+          <span id="doneCount" class="gcount dyn"></span>
+        </div>
+        <div id="doneMain" class="dyn"></div>
+      </details>
+
+      <details class="sect"><summary>Collections</summary>
+        <div id="doneColl" class="dyn"></div>
+      </details>
     </section>
 
     <section id="t-ai" class="panel hidden">
-      <div class="aitypes" id="aiTypes"></div>
-      <div class="board" id="board"></div>
+      <div class="aitypes dyn" id="aiTypes"></div>
+      <div class="board dyn" id="board"></div>
       <div class="row">
-        <button id="aiAllType">Tout débloquer (ce type)</button>
-        <button id="aiAll">Tout débloquer (4 types)</button>
-        <button id="aiNoneType">Tout vider (ce type)</button>
+        <button id="aiAllType">Unlock all (this type)</button>
+        <button id="aiAll">Unlock all (4 types)</button>
+        <button id="aiNoneType">Clear all (this type)</button>
       </div>
-      <p class="note">Case claire = carte obtenue. Clique une case pour l'ajouter ou la retirer. Même disposition que l'écran du jeu.</p>
+      <p class="note">Light cell = board obtained. Click a cell to add or remove it. Same layout as the in-game screen.</p>
     </section>
-
 
     <section id="t-sol" class="panel hidden">
+      <div class="gtabs dyn" id="solTabs"></div>
       <div class="filters">
-        <input id="solSearch" placeholder="Rechercher un nom…">
-        <select id="solFilter"></select>
-        <button id="solAllS">Tout le monde en S</button>
+        <input id="solSearch" placeholder="Search a name…">
+        <button id="solAllS">Everyone to S</button>
+        <button id="solNew">+ New all-S soldier</button>
+        <span id="solCount" class="gcount dyn"></span>
       </div>
-      <div class="solwrap">
-        <div class="sollist" id="solList"></div>
-        <div id="solEdit"><p class="note">Sélectionne un soldat.</p></div>
-      </div>
+      <div class="gtable-wrap"><table class="gtable" id="solTable">
+        <thead><tr>
+          <th data-sort="name" class="l">NAME</th><th data-sort="lifeMax">LIFE</th><th data-sort="psyMax">PSYCHE</th>
+          <th data-sort="power">⚔ COMBAT</th><th data-sort="R&D">🔧 R&amp;D</th>
+          <th data-sort="Mess Hall">🍲 MESS</th><th data-sort="Medical">💊 MED.</th>
+          <th data-sort="Intel">📁 INTEL</th><th data-sort="gmp">GMP+</th>
+        </tr></thead><tbody id="solBody" class="dyn"></tbody></table></div>
+      <div id="solEdit" class="soledit dyn"></div>
     </section>
+
     <section id="t-veh" class="panel hidden">
-      <table><thead><tr><th>#</th><th>Véhicule</th><th>Vie</th><th>État</th><th></th></tr></thead><tbody id="vehBody"></tbody></table>
-      <div class="row"><button id="vehRepair">Tout réparer (100 %)</button></div>
-      <p class="note">« Dupliquer » crée une copie à 100 % du véhicule (même modèle, mêmes rangs). Le garage est limité à 50 véhicules.</p>
+      <div class="addrow dyn" id="vehAdd"></div>
+      <div class="filters">
+        <button id="vehRepair">Repair everything (100%)</button>
+        <span id="vehCount" class="gcount dyn"></span>
+      </div>
+      <table><thead><tr><th>#</th><th>VEHICLE</th><th>LIFE</th><th>%</th><th title="Attack power — this is what the 4th &lt;CARAC&gt; grade reads on helicopters (9999 = S)">ATTACK</th><th title="Armor — this is what the 4th &lt;CARAC&gt; grade reads on tanks and armored vehicles (999 = S)">ARMOR</th><th title="Raises the 4th &lt;CARAC&gt; grade to S using whichever field this class reads">4th GRADE</th><th title="Per-unit value, role still unknown (not one of the grades)">? A</th><th title="Per-unit value, role still unknown (not one of the grades)">? B</th><th>STATUS</th><th></th></tr></thead><tbody id="vehBody" class="dyn"></tbody></table>
+      <p class="note" data-i18n-html>“Duplicate” makes a full-HP copy of the vehicle (same model, same stats). “Add” builds a new one from a model captured in a real save. The garage holds 50 vehicles. Only the 4th of the six in-game &lt;CARAC&gt; grades is stored per unit. Tanks and armored vehicles read it from <b>ARMOR</b> (999 shows S), helicopters from <b>ATTACK</b> (9999 shows S) — all checked in game. The <b>S</b> button writes whichever field that vehicle's class uses. The other five grades come from the model and its weapons, not from the save. <b>? A / ? B</b> differ between two units of the same model but change nothing visible — still unidentified.</p>
     </section>
 
     <section id="t-zeke" class="panel hidden">
-      <h3 style="margin-top:0">Pièces en stock</h3>
-      <table><thead><tr><th>#</th><th>Pièce</th><th>État</th><th>Montée</th><th></th></tr></thead><tbody id="zekeBody"></tbody></table>
+      <h3 style="margin-top:0">Parts in stock</h3>
+      <table><thead><tr><th>#</th><th>PART</th><th>CONDITION</th><th>MOUNTED</th><th></th></tr></thead><tbody id="zekeBody" class="dyn"></tbody></table>
       <div class="row">
-        <select id="zekeAddSel" class="field" style="background:#0b0d0a;color:var(--text);border:1px solid var(--line);border-radius:6px;padding:7px 9px"></select>
-        <button id="zekeAdd">Ajouter la pièce</button>
-        <button id="zekeAll">Ajouter 1 de chaque</button>
-        <button id="zekeRepair">Tout réparer (100 %)</button>
+        <select id="zekeAddSel" class="dyn field" style="background:#0b0d0a;color:var(--text);border:1px solid var(--line);border-radius:6px;padding:7px 9px"></select>
+        <button id="zekeAdd">Add the part</button>
+        <button id="zekeAll">Add one of each</button>
+        <button id="zekeRepair">Repair everything (100%)</button>
       </div>
-      <h3>Morceaux en cours (x/5)</h3>
-      <div id="zekeFrag" class="grid2"></div>
-      <p class="note">Une pièce montée ne peut pas être supprimée ici : démonte-la d'abord dans le jeu.</p>
+      <h3>Fragments in progress (x/5)</h3>
+      <div id="zekeFrag" class="grid2 dyn"></div>
+      <p class="note">A mounted part cannot be removed here: take it off in the game first.</p>
     </section>
   </div>
 </main>
 <div id="toast"></div>
 <script src="pwcore.js"></script>
-<script>
-const $=id=>document.getElementById(id);
-const TYPES=[['L','Locomotion','#58c73a'],['P','Poursuite','#d7c832'],['A','Attaque','#34c3d0'],['S','Système','#d9588f']];
-let save=null,fileName='STW.bin',aiType=0,dirty=false;
-
-function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';clearTimeout(t._h);t._h=setTimeout(()=>t.style.display='none',2600)}
-function setDirty(d){dirty=d;$('status').textContent=save?(fileName+(d?' — modifié':'')):''}
-
-function load(file){
-  const r=new FileReader();
-  r.onload=()=>{try{save=new PWCore.PWSave(r.result);fileName=file.name;render();$('drop').classList.add('hidden');$('editor').classList.remove('hidden');$('btnSave').disabled=false;setDirty(false);toast('Sauvegarde chargée')}catch(e){toast('Erreur : '+e.message)}};
-  r.readAsArrayBuffer(file);
-}
-function render(){
-  $('gName').textContent=save.playerName||'—';
-  $('gGmp').value=save.gmp;
-  $('gFile').textContent=fileName;
-  renderAI();
-  renderZeke();
-  renderSolFilter();solSel=-1;renderSolList();renderSolEdit();
-  renderVeh();
-}
-function renderAI(){
-  $('aiTypes').innerHTML=TYPES.map((t,i)=>`<button data-i="${i}" class="${i===aiType?'on':''}"><span style="color:${t[2]}">■</span> ${t[1]} <b>${save.aiCount(i)}</b></button>`).join('');
-  let h='';for(let r=0;r<10;r++)for(let c=0;c<10;c++){const idx=c*10+r;h+=`<div class="cell ${save.aiBoard(aiType,idx)?'on':''}" data-i="${idx}" title="Carte ${idx+1}"></div>`}
-  $('board').innerHTML=h;
-}
-
-let solSel=-1;
-function renderSolFilter(){const f=$('solFilter');f.innerHTML='<option value="-1">Toutes les affectations</option>'+PWCore.ASSIGN.map((a,i)=>`<option value="${i}">${a}</option>`).join('')}
-function renderSolList(){
-  const q=$('solSearch').value.trim().toUpperCase(),fa=+$('solFilter').value;
-  const list=save.soldiers().filter(s=>(!q||s.name.includes(q))&&(fa<0||s.assign===fa));
-  $('solList').innerHTML=list.map(s=>`<div data-i="${s.index}" class="${s.index===solSel?'on':''}">${s.name}<small>${PWCore.ASSIGN[s.assign]||'?'}</small></div>`).join('')||'<div>Aucun</div>';
-}
-function renderSolEdit(){
-  if(solSel<0){$('solEdit').innerHTML='<p class="note">Sélectionne un soldat.</p>';return}
-  const s=save.soldier(solSel);
-  const row=(k,v,g)=>`<div class="stat"><span>${k}</span><input data-f="${k}" type="number" min="0" max="1250" value="${v}"><span class="grade">${g}</span></div>`;
-  $('solEdit').innerHTML=`
-   <div class="grid2">
-    <div class="field"><label>Nom</label><input data-f="name" value="${s.name}" maxlength="15"></div>
-    <div class="field"><label>Affectation</label><select data-f="assign">${PWCore.ASSIGN.map((a,i)=>`<option value="${i}" ${i===s.assign?'selected':''}>${a}</option>`).join('')}</select></div>
-   </div>
-   <div class="grid2" style="margin-top:10px">
-    <div class="field"><label>Vie (actuelle / max)</label><div style="display:flex;gap:6px"><input data-f="lifeCur" type="number" value="${s.lifeCur}"><input data-f="lifeMax" type="number" value="${s.lifeMax}"></div></div>
-    <div class="field"><label>Psyché (actuelle / max)</label><div style="display:flex;gap:6px"><input data-f="psyCur" type="number" value="${s.psyCur}"><input data-f="psyMax" type="number" value="${s.psyMax}"></div></div>
-    <div class="field"><label>Hostilité</label><input data-f="hostility" type="number" value="${s.hostility}"></div>
-    <div class="field"><label>Moral</label><input data-f="morale" type="number" value="${s.morale}"></div>
-   </div>
-   <h3>Aptitudes au combat (rang ${PWCore.battleGrade(s.combat)})</h3>
-   ${Object.entries(s.battle).map(([k,v])=>row(k,v,PWCore.battleGrade(v))).join('')}
-   <h3>Équipes</h3>
-   ${Object.entries(s.team).map(([k,v])=>row(k,v,PWCore.teamGrade(v))).join('')}
-   <div class="row"><button id="solMax">Ce soldat en S partout</button></div>`;
-}
-$('solList').onclick=e=>{const d=e.target.closest('[data-i]');if(!d)return;solSel=+d.dataset.i;renderSolList();renderSolEdit()};
-$('solSearch').oninput=renderSolList;$('solFilter').onchange=renderSolList;
-$('solEdit').addEventListener('change',e=>{const f=e.target.dataset.f;if(!f)return;save.setSoldierField(solSel,f,e.target.value);setDirty(true);renderSolEdit();if(f==='name'||f==='assign')renderSolList()});
-$('solEdit').addEventListener('click',e=>{if(e.target.id!=='solMax')return;maxSoldier(solSel);renderSolEdit();setDirty(true)});
-function maxSoldier(i){const s=save.soldier(i);for(const k in s.battle)save.setSoldierField(i,k,1250);for(const k in s.team)save.setSoldierField(i,k,1250);save.setSoldierField(i,'lifeMax',9999);save.setSoldierField(i,'lifeCur',9999);save.setSoldierField(i,'psyMax',9999);save.setSoldierField(i,'psyCur',9999)}
-$('solAllS').onclick=()=>{if(!confirm('Passer tous les soldats en S (combat + équipes) ?'))return;save.soldiers().forEach(s=>maxSoldier(s.index));renderSolEdit();setDirty(true);toast('Tous les soldats sont en S')};
-
-function renderZeke(){
-  const parts=save.zekeParts();
-  $('zekeBody').innerHTML=parts.map(p=>`<tr><td>${p.index+1}</td><td>${p.name}</td><td>${p.condition} %</td><td>${p.equipped?'oui':''}</td><td>${p.equipped?'':`<button data-del="${p.index}">Supprimer</button>`}</td></tr>`).join('')||'<tr><td colspan=5>Aucune pièce</td></tr>';
-  $('zekeAddSel').innerHTML=PWCore.ZEKE_PARTS.map((p,i)=>`<option value="${i}">${p.name}${p.main?'':' (option)'}</option>`).join('');
-  $('zekeFrag').innerHTML=save.zekeFragments().map((f,i)=>`<div class="field"><label>${f.name}</label><input type="number" min="0" max="4" data-frag="${i}" value="${f.value}"></div>`).join('');
-}
-$('zekeBody').onclick=e=>{const b=e.target.closest('[data-del]');if(!b)return;try{save.removeZekePart(+b.dataset.del);renderZeke();setDirty(true)}catch(err){toast(err.message)}};
-$('zekeAdd').onclick=()=>{const p=PWCore.ZEKE_PARTS[+$('zekeAddSel').value];try{save.addZekePart(p.kind,p.sub);renderZeke();setDirty(true)}catch(err){toast(err.message)}};
-$('zekeAll').onclick=()=>{try{PWCore.ZEKE_PARTS.forEach(p=>save.addZekePart(p.kind,p.sub));renderZeke();setDirty(true)}catch(err){toast(err.message)}};
-$('zekeRepair').onclick=()=>{save.repairZeke();renderZeke();setDirty(true);toast('Toutes les pièces à 100 %')};
-$('zekeFrag').addEventListener('change',e=>{const i=e.target.dataset.frag;if(i===undefined)return;save.setZekeFragment(+i,+e.target.value);renderZeke();setDirty(true)});
-
-function renderVeh(){
-  $('vehBody').innerHTML=save.vehicles().map(v=>`<tr><td>${v.index+1}</td><td>${v.name}</td><td><input type="number" data-hp="${v.index}" value="${v.hp}" min="1" max="${v.hpMax}" style="width:90px;background:#0b0d0a;color:var(--text);border:1px solid var(--line);border-radius:6px;padding:5px 8px"> / ${v.hpMax}</td><td>${Math.round(100*v.hp/v.hpMax)} %</td><td><button data-dup="${v.index}">Dupliquer</button></td></tr>`).join('')||'<tr><td colspan=5>Aucun véhicule</td></tr>';
-}
-$('vehBody').addEventListener('change',e=>{const i=e.target.dataset.hp;if(i===undefined)return;save.setVehicleHp(+i,+e.target.value);renderVeh();setDirty(true)});
-$('vehBody').addEventListener('click',e=>{const b=e.target.closest('[data-dup]');if(!b)return;try{save.duplicateVehicle(+b.dataset.dup);renderVeh();setDirty(true);toast('Véhicule dupliqué')}catch(err){toast(err.message)}});
-$('vehRepair').onclick=()=>{save.repairVehicles();renderVeh();setDirty(true);toast('Véhicules réparés')};
-$('aiTypes').onclick=e=>{const b=e.target.closest('button');if(!b)return;aiType=+b.dataset.i;renderAI()};
-$('board').onclick=e=>{const c=e.target.closest('.cell');if(!c)return;const i=+c.dataset.i;save.setAiBoard(aiType,i,!save.aiBoard(aiType,i));renderAI();setDirty(true)};
-$('aiAllType').onclick=()=>{for(let i=0;i<100;i++)save.setAiBoard(aiType,i,true);renderAI();setDirty(true)};
-$('aiNoneType').onclick=()=>{for(let i=0;i<100;i++)save.setAiBoard(aiType,i,false);renderAI();setDirty(true)};
-$('aiAll').onclick=()=>{for(let t=0;t<4;t++)for(let i=0;i<100;i++)save.setAiBoard(t,i,true);renderAI();setDirty(true)};
-$('gGmp').onchange=e=>{save.gmp=Number(e.target.value);$('gGmp').value=save.gmp;setDirty(true)};
-$('tabs').onclick=e=>{const b=e.target.closest('button');if(!b)return;document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));['gen','ai','sol','veh','zeke'].forEach(t=>$('t-'+t).classList.toggle('hidden',t!==b.dataset.t))};
-$('btnOpen').onclick=()=>$('file').click();
-$('drop').onclick=()=>$('file').click();
-$('file').onchange=e=>e.target.files[0]&&load(e.target.files[0]);
-['dragover','dragenter'].forEach(ev=>$('drop').addEventListener(ev,e=>{e.preventDefault();$('drop').classList.add('hover')}));
-['dragleave','drop'].forEach(ev=>$('drop').addEventListener(ev,e=>{e.preventDefault();$('drop').classList.remove('hover')}));
-$('drop').addEventListener('drop',e=>e.dataTransfer.files[0]&&load(e.dataTransfer.files[0]));
-$('btnSave').onclick=()=>{try{const out=save.build();const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([out]));a.download=fileName;a.click();setDirty(false);toast('Fichier généré : '+fileName)}catch(e){toast('Erreur : '+e.message)}};
-window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue=''}});
-</script>
+<script src="pwref.js"></script>
+<script src="pwi18n.js"></script>
+<script src="pwui.js"></script>
 </body>
 </html>

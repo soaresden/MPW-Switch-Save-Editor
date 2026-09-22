@@ -4,3 +4,10 @@ saves/
 out/
 STW*
 STJ*
+/screenshots et save
+*.zip
+
+# editor scratch
+*.bak
+.DS_Store
+Thumbs.db
