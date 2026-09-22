@@ -1,12 +1,10 @@
 # MPW Switch Save Editor
 
+[![Open the editor](https://img.shields.io/badge/▶_Open_the_editor-e8a33a?style=for-the-badge&logoColor=white)](https://soaresden.github.io/MPW-Switch-Save-Editor/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-555?style=for-the-badge)](LICENSE)
+
 Save editor for **METAL GEAR SOLID: Peace Walker – Master Collection Version** on **Nintendo Switch**.
-
-<h2 align="center"><a href="https://soaresden.github.io/MPW-Switch-Save-Editor/">▶ Open the editor</a></h2>
-
-<p align="center">
-Nothing to install, nothing to upload — it runs entirely in your browser and your save never leaves your computer.
-</p>
+Nothing to install and nothing to upload: it runs entirely in your browser and your save never leaves your computer.
 
 > ⚠️ Work in progress. Always keep a backup of your save (Checkpoint / JKSV) before writing an edited one.
 
@@ -33,7 +31,7 @@ Nothing to install, nothing to upload — it runs entirely in your browser and y
 
 ### Web interface (recommended)
 
-👉 **https://soaresden.github.io/MPW-Switch-Save-Editor/**
+**https://soaresden.github.io/MPW-Switch-Save-Editor/**
 
 Drop **the JKSV/Checkpoint zip** (or the `STW…01` file alone), edit, click **Save**.
 A zip is rebuilt with every other file untouched, under the same name, so it can go straight back into `/JKSV/METAL GEAR SOLID Peace Walker - Master Collection Version/` and be restored. Everything runs locally in the browser; the save never leaves your computer.
