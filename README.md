@@ -26,7 +26,10 @@ Save editor for **METAL GEAR SOLID: Peace Walker – Master Collection Version**
 ## Usage
 
 ### Web interface (recommended)
-Open `web/index.html` in a browser (or the GitHub Pages site), drop **the JKSV/Checkpoint zip** (or the `STW…01` file alone), edit, click **Save**.
+
+👉 **https://soaresden.github.io/MPW-Switch-Save-Editor/**
+
+Drop **the JKSV/Checkpoint zip** (or the `STW…01` file alone), edit, click **Save**.
 A zip is rebuilt with every other file untouched, under the same name, so it can go straight back into `/JKSV/METAL GEAR SOLID Peace Walker - Master Collection Version/` and be restored. Everything runs locally in the browser; the save never leaves your computer.
 (If a zip holds several saves, the first `STW…`/`STJ…` file is opened.)
 

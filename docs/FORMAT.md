@@ -82,7 +82,7 @@ Weapon id 186 = Stun Grenade (seen in development at 85 % then 90 %).
 | 0x68 | u16 | attack power (1200 helicopters, 1500 LAV-G, 1750 BTR-60PB / LAV-C, 1850 T-72A / MBTk-70) |
 
 Everything else is identical for every unit of a model, so a new vehicle can be created by copying a
-captured record (`web/pwcore.js` ships one base record per class), stamping the model id in and giving
+captured record (`pwcore.js` ships one base record per class), stamping the model id in and giving
 it a fresh unit id.
 
 ### Model ids (0x39), found by probing every value in a real save

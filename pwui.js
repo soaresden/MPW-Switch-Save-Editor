@@ -572,26 +572,57 @@ function blueprintList() {
           const lo = Math.floor((e.n - 1) / 20) * 20 + 1;
           const ch = kind === 'main' ? chLabel(i)
             : T('Extra Ops {a}-{b}', { a: String(lo).padStart(3, '0'), b: String(lo + 19).padStart(3, '0') });
-          out.push({ name: shown, src, ch, st, sRank: field === 's' });
+          const where = inStage ? (/\(([^()]+)\)\s*$/.exec(shown) || [])[1] : null;
+          out.push({ name: bpName(shown, inStage), full: shown, where, key: bpKey(txt, inStage), src, ch, st, sRank: field === 's' });
         });
       }
     });
   }
-  return out;
+  return mergeBp(out);
+}
+/** Short display name: drop the "Found in stage:" prefix and the "Design Specs" suffix. */
+function bpName(t, inStage) {
+  let x = t.replace(/^(Found in stage|Trouvé sur le terrain|Trouvé dans)\s*:\s*/i, '');
+  if (inStage) x = x.replace(/\s*\([^()]+\)\s*$/, '');          /* the stage location */
+  x = x.replace(/\s*\((?:Fandom|Steam|source|sources)[^()]*\)/gi, '').replace(/\s*\(\?\)\s*$/, '');
+  return x
+          .replace(/\s*(Design Specs|Blueprint)\b/i, '')
+          .replace(/^(Spécifications?|Spécifi\.|Spéc\.|Spé\.|Plans?)\s+(de\s+conception\s+|conception\s+)?(du |de la |de l['’]|des |d['’])?/i, '')
+          .replace(/\s{2,}/g, ' ').replace(/^[\s·-]+|[\s·-]+$/g, '') || t;
+}
+/** Key used to merge the same blueprint written several ways across the reference. */
+function bpKey(enText, inStage) {
+  return bpName(enText, inStage).toLowerCase()
+    .replace(/\bw\/\s*/g, '').replace(/\((bj|barrel jacket)\)/g, '(barrel jacket)')
+    .replace(/[^a-z0-9]/g, '');
+}
+const BP_RANK = { ok: 2, maybe: 1, todo: 0 };
+/** One row per blueprint: merge the duplicates, keep the best status, list every source. */
+function mergeBp(list) {
+  const by = new Map();
+  for (const b of list) {
+    const g = by.get(b.key);
+    if (!g) { by.set(b.key, { ...b, srcs: [b.src + (b.sRank ? ' (S)' : '')] }); continue; }
+    g.srcs.push(b.src + (b.sRank ? ' (S)' : ''));
+    if (BP_RANK[b.st.k] > BP_RANK[g.st.k]) { g.st = b.st; g.sRank = b.sRank; }
+    if (b.name.length > g.name.length) g.name = b.name;
+    if (!g.where && b.where) g.where = b.where;
+  }
+  return [...by.values()];
 }
 function renderBp() {
   let list = blueprintList();
   const total = list.length;
   const q = ($('bpSearch').value || '').trim().toLowerCase();
   if (bpFilter === 'todo') list = list.filter(b => b.st.k !== 'ok');
-  if (q) list = list.filter(b => (b.name + ' ' + b.src).toLowerCase().includes(q));
+  if (q) list = list.filter(b => (b.name + ' ' + b.srcs.join(' ')).toLowerCase().includes(q));
   $('bpCount').textContent = list.length + ' / ' + total;
   const groups = [];
   for (const b of list) { let g = groups.find(x => x.ch === b.ch); if (!g) groups.push(g = { ch: b.ch, rows: [] }); g.rows.push(b); }
   $('doneBp').innerHTML = groups.map((g, i) => `<details class="ch" ${i < 2 ? 'open' : ''}><summary>${esc(g.ch)} <b>${g.rows.length}</b></summary>
     <div class="gtable-wrap"><table class="gtable"><tbody>${g.rows.map(b => `<tr>
       <td class="c ${b.st.cls}" style="width:40px" title="${esc(b.st.w)}">${b.st.i}</td>
-      <td class="l"><b>${esc(b.name)}</b>${b.sRank ? ' <span class="srk">S</span>' : ''}<br><span class="bpsrc">${esc(b.src)} — ${esc(b.st.w)}</span></td>
+      <td class="l"><b>${esc(b.name)}</b>${b.sRank ? ' <span class="srk" title="' + esc(T('only at S rank')) + '">S</span>' : ''}${b.where ? ' <span class="bpsrc">— ' + esc(b.where) + '</span>' : ''}<br><span class="bpsrc">${esc(b.srcs.join(' · '))} — ${esc(b.st.w)}</span></td>
     </tr>`).join('')}</tbody></table></div></details>`).join('')
     || `<p class="note">${T('Nothing left here — well done.')}</p>`;
 }
