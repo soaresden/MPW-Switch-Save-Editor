@@ -85,6 +85,7 @@ function renderDev() {
   $('devInfo').textContent = n.length ? T('{n} development(s) in progress ({p})', { n: n.length, p: n.map(d => d.progress + ' %').join(', ') }) : T('No development in progress');
   $('devFinish').disabled = !n.length;
 }
+$('devSeen').onclick = () => { const n = save.markAllSeen(); setDirty(true); toast(n ? T('{n} NEW badges cleared', { n }) : T('No NEW badge left')); };
 $('devFinish').onclick = () => { const n = save.finishDevelopments(); renderDev(); setDirty(true); toast(T('{n} development(s) finished', { n })); };
 $('gVars').addEventListener('change', e => { const id = e.target.dataset.var; if (!id) return; save.varSet(+id, +e.target.value); e.target.value = save.varGet(+id); setDirty(true); });
 $('gGmp').onchange = e => { save.gmp = Number(e.target.value); $('gGmp').value = save.gmp; setDirty(true); };
@@ -573,12 +574,18 @@ function blueprintList() {
           const ch = kind === 'main' ? chLabel(i)
             : T('Extra Ops {a}-{b}', { a: String(lo).padStart(3, '0'), b: String(lo + 19).padStart(3, '0') });
           const where = inStage ? (/\(([^()]+)\)\s*$/.exec(shown) || [])[1] : null;
-          out.push({ name: bpName(shown, inStage), full: shown, where, key: bpKey(txt, inStage), src, ch, st, sRank: field === 's' });
+          out.push({ name: bpName(shown, inStage), full: shown, where, key: bpKey(txt, inStage), keys: bpKeys(txt, inStage), src, ch, st, sRank: field === 's' });
         });
       }
     });
   }
-  return mergeBp(out);
+  return mergeBp(out, saveBlueprints());
+}
+/** The blueprints this build can read straight out of the save, keyed like the reference ones. */
+function saveBlueprints() {
+  const m = new Map();
+  for (const b of save.blueprints()) m.set(bpKey(b.en), b);
+  return m;
 }
 /** Short display name: drop the "Found in stage:" prefix and the "Design Specs" suffix. */
 function bpName(t, inStage) {
@@ -596,17 +603,58 @@ function bpKey(enText, inStage) {
     .replace(/\bw\/\s*/g, '').replace(/\((bj|barrel jacket)\)/g, '(barrel jacket)')
     .replace(/[^a-z0-9]/g, '');
 }
+const BP_NOISE = /\b(completion|found|fandom|steam|french|source|sources|normally|per|wiki|guide|unlock|development|pdf|page|list)\b/i;
+/** Every spelling a reference line could be trying to name, so a loose name still finds its save entry. */
+function bpKeys(enText, inStage) {
+  const base = bpName(enText, inStage);
+  const out = new Set([bpKey(enText, inStage)]);
+  let m; const re = /\(([^()]+)\)/g;
+  let clean = base;
+  while ((m = re.exec(base))) {
+    const inner = m[1].trim();
+    if (BP_NOISE.test(inner) || inner.split(/\s+/).length > 2) {   /* a note, not a variant: drop it */
+      clean = clean.replace(m[0], ' ');
+    } else out.add(norm(inner));                                   /* "(Men's Cologne)" names it */
+  }
+  clean = clean.replace(/\s{2,}/g, ' ').trim();
+  if (clean) out.add(norm(clean));
+  out.delete('');
+  return [...out];
+}
+const norm = t => t.toLowerCase().replace(/\bw\/\s*/g, '').replace(/\((bj|barrel jacket)\)/g, '(barrel jacket)').replace(/[^a-z0-9]/g, '');
 const BP_RANK = { ok: 2, maybe: 1, todo: 0 };
 /** One row per blueprint: merge the duplicates, keep the best status, list every source. */
-function mergeBp(list) {
+function mergeBp(list, fromSave) {
   const by = new Map();
+  const used = new Set();
   for (const b of list) {
+    const hit = (b.keys || [b.key]).find(k => fromSave.has(k));
+    const sv = hit ? fromSave.get(hit) : null;
+    if (sv) {                                   /* the save knows: that answer wins */
+      used.add(hit);
+      b.key = hit;                              /* merge on the save's identity */
+      b.st = sv.owned
+        ? { i: '✅', k: 'ok', cls: 'okv', w: T('read in your save: you have it') }
+        : { i: '❌', k: 'todo', cls: 'kov', w: T('read in your save: you do not have it') };
+      b.sure = true;
+    }
     const g = by.get(b.key);
     if (!g) { by.set(b.key, { ...b, srcs: [b.src + (b.sRank ? ' (S)' : '')] }); continue; }
     g.srcs.push(b.src + (b.sRank ? ' (S)' : ''));
     if (BP_RANK[b.st.k] > BP_RANK[g.st.k]) { g.st = b.st; g.sRank = b.sRank; }
     if (b.name.length > g.name.length) g.name = b.name;
     if (!g.where && b.where) g.where = b.where;
+    if (b.sure) { g.sure = true; g.st = b.st; }
+  }
+  /* blueprints the save names but no mission in the reference mentions */
+  for (const [k, sv] of fromSave) {
+    if (used.has(k) || by.has(k)) continue;
+    by.set(k, {
+      name: LANG === 'fr' ? sv.fr : sv.en, key: k, where: null, sure: true,
+      srcs: [T('no mission in my table lists it')], ch: T('Not tied to a mission'),
+      st: sv.owned ? { i: '✅', k: 'ok', cls: 'okv', w: T('read in your save: you have it') }
+                   : { i: '❌', k: 'todo', cls: 'kov', w: T('read in your save: you do not have it') }
+    });
   }
   return [...by.values()];
 }
@@ -622,7 +670,7 @@ function renderBp() {
   $('doneBp').innerHTML = groups.map((g, i) => `<details class="ch" ${i < 2 ? 'open' : ''}><summary>${esc(g.ch)} <b>${g.rows.length}</b></summary>
     <div class="gtable-wrap"><table class="gtable"><tbody>${g.rows.map(b => `<tr>
       <td class="c ${b.st.cls}" style="width:40px" title="${esc(b.st.w)}">${b.st.i}</td>
-      <td class="l"><b>${esc(b.name)}</b>${b.sRank ? ' <span class="srk" title="' + esc(T('only at S rank')) + '">S</span>' : ''}${b.where ? ' <span class="bpsrc">— ' + esc(b.where) + '</span>' : ''}<br><span class="bpsrc">${esc(b.srcs.join(' · '))} — ${esc(b.st.w)}</span></td>
+      <td class="l"><b>${esc(b.name)}</b>${b.sure ? ' <span class="sure" title="' + esc(T('read straight from the save, not deduced')) + '">save</span>' : ''}${b.sRank ? ' <span class="srk" title="' + esc(T('only at S rank')) + '">S</span>' : ''}${b.where ? ' <span class="bpsrc">— ' + esc(b.where) + '</span>' : ''}<br><span class="bpsrc">${esc(b.srcs.join(' · '))} — ${esc(b.st.w)}</span></td>
     </tr>`).join('')}</tbody></table></div></details>`).join('')
     || `<p class="note">${T('Nothing left here — well done.')}</p>`;
 }
@@ -648,7 +696,7 @@ function renderDone() {
     card(T('Main Ops finished'), fin, rows.length, T('Main Op 26 has no rank')),
     card(T('Main Ops at A or better'), atA, ranked.length, T('goal: every Main Op at A')),
     card(T('Main Ops at S'), atS, ranked.length, T('goal: BIG BOSS title')),
-    card(T('Blueprints reachable'), bpOk, bps.length, T('+ {n} probably picked up in a stage', { n: bpMaybe })),
+    card(T('Blueprints'), bpOk, bps.length, T('{s} read in the save, + {n} probably picked up in a stage', { s: bps.filter(b => b.sure).length, n: bpMaybe })),
     card(T('Weapons developed'), wDev, wTot, T('R&D lines present in the save')),
     card(T('Items developed'), iDev, iTot, T('R&D lines present in the save')),
     card(T('ZEKE parts'), zAll.length - zAll.filter(p => !zHave.has(p.name)).length, zAll.length, ''),

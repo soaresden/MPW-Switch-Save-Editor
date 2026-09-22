@@ -94,6 +94,14 @@ window.PW_FR = {
   'A <b>blueprint</b> (“Design Specs”) must be in your hands <b>before</b> the R&amp;D line even appears. ✅ = the mission that gives it is finished in your save. ⚠ = the mission is finished but the blueprint is an <b>S-rank reward</b> and you are not at S. ❌ = mission not done. 🔍 = picked up <b>inside</b> the stage, so finishing the mission is not enough — I cannot tell whether you actually grabbed it.':
     'Un <b>plan</b> (« Spécifications de conception ») doit être en ta possession <b>avant</b> que la ligne R&amp;D apparaisse. ✅ = la mission qui le donne est terminée dans ta sauvegarde. ⚠ = la mission est terminée mais le plan est une <b>récompense de rang S</b> et tu n’es pas en S. ❌ = mission pas faite. 🔍 = ramassé <b>dans</b> le niveau, donc finir la mission ne suffit pas — je ne peux pas savoir si tu l’as vraiment pris.',
   'Only the ones I am missing': 'Seulement ceux qui me manquent',
+  'Blueprints': 'Plans', '{s} read in the save, + {n} probably picked up in a stage': '{s} lus dans la sauvegarde, + {n} probablement ramassés dans un niveau',
+  'read in your save: you have it': 'lu dans ta sauvegarde : tu l’as',
+  'read in your save: you do not have it': 'lu dans ta sauvegarde : tu ne l’as pas',
+  'read straight from the save, not deduced': 'lu directement dans la sauvegarde, pas déduit',
+  'no mission in my table lists it': 'aucune mission de ma table ne le mentionne',
+  'Not tied to a mission': 'Sans mission associée',
+  'Clear every NEW badge': 'Enlever tous les badges NOUVEAU',
+  '{n} NEW badges cleared': '{n} badges NOUVEAU enlevés', 'No NEW badge left': 'Plus aucun badge NOUVEAU',
   'This list is rebuilt from the missions, not read from the save, so it is <b>incomplete</b>: a check against a real R&amp;D “Key items” screen found 19 blueprints the game hands out without any mission listing them (the magazines, the cookbook, the Kampfpistole, the recipes…). Until the save’s own blueprint table is located, treat a ❌ as “probably missing”, not as proof.':
     'Cette liste est reconstruite à partir des missions, elle n’est pas lue dans la sauvegarde, donc elle est <b>incomplète</b> : une vérification sur un vrai écran R&amp;D « Objets clés » a montré 19 plans que le jeu donne sans qu’aucune mission ne les mentionne (les magazines, le livre de recettes, le Kampfpistole, les recettes…). Tant que le tableau des plans de la sauvegarde n’est pas localisé, considère un ❌ comme « probablement manquant », pas comme une preuve.', 'Search a blueprint…': 'Chercher un plan…',
   'Main Op {n}': 'Op principale {n}', 'Extra Op {n}': 'Op secondaire {n}', 'Extra Ops': 'Ops secondaires',

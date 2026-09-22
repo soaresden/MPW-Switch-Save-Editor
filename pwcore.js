@@ -455,10 +455,32 @@
       }
       return res;
     }
-    /** Quantity held, at +0x0C of a development record (the number printed in the R&D grid). */
+    /** The number the R&D grid prints under the icon (+0x0C). A stock/production counter, capped at 9999. */
     setDevQty(kind, index, v) {
       const t = DEV[kind];
       this.dv.setUint32(t.table + index * t.size + 12, Math.max(0, Math.min(9999, v | 0)) >>> 0, true);
+    }
+    /** The NOUVEAU badge: bit 0x40000 = newly available, bit 0x20000 = the player has seen it.
+        The badge shows when 0x40000 is set and 0x20000 is not (checked on 16 of 16 badged cells). */
+    markAllSeen() {
+      let n = 0;
+      for (const kind of ['weapons', 'items']) {
+        const t = DEV[kind], count = this.dv.getUint32(t.count, true);
+        for (let i = 0; i < count; i++) {
+          const o = t.table + i * t.size + 16, v = this.dv.getUint32(o, true);
+          if ((v & 0x40000) && !(v & 0x20000)) { this.dv.setUint32(o, (v | 0x20000) >>> 0, true); n++; }
+        }
+      }
+      return n;
+    }
+    /** Blueprints ("Design Specs") read from the save: the ids this build can name. */
+    blueprints() {
+      const t = DEV.items, out = [];
+      for (const id of Object.keys(BLUEPRINTS).map(Number).sort((a, b) => a - b)) {
+        const o = t.table + (id - 1) * t.size;
+        out.push({ id, en: BLUEPRINTS[id][0], fr: BLUEPRINTS[id][1], owned: this.dv.getUint32(o + 4, true) === 3 });
+      }
+      return out;
     }
     finishDevelopments() {
       let n = 0;
@@ -504,6 +526,76 @@
   // Every model in the game, found by probing the model id at 0x39 in a real save.
   // id39 = model (0x25..0x30, valid range: outside it the game shows ZEKE or a broken record),
   // id48 = the second per-model index at 0x48. hp/atk marked est: true are guesses.
+  /* Blueprint ids in the items table, zone 1-130.
+     Established by pairing the 62 developed ids <= 125 of a reference save with the 62 key-item
+     detail screens captured from that same save, in grid order. Id 100 (Cookbook) was confirmed
+     separately by flipping it and seeing the line appear in game. Inferred, not exhaustive. */
+  const BLUEPRINTS = {
+    1: ["EZ Gun (Life Recovery)", "fusil EZ (RV)"],
+    4: ["PM", "PM"],
+    6: ["PB/6P9", "PB/6P9"],
+    7: ["M1911A1", "M1911A1"],
+    8: ["Kampfpistole", "Kampfpistole"],
+    12: ["Support Supply Marker", "marqueur approv. soutien"],
+    13: ["Support Strike Marker", "marqueur frappe soutien"],
+    14: ["Banana", "L'art de cultiver les bananes"],
+    15: ["Twin Barrel Shotgun", "fusil de chasse à 2 canons"],
+    16: ["M37", "M37"],
+    18: ["RK47", "RK47"],
+    32: ["ADM65", "ADM65"],
+    35: ["FAL", "FAL"],
+    38: ["M10", "M10"],
+    42: ["M10 (Barrel Jacket)", "M10 (EC)"],
+    43: ["Uz61", "UZ61"],
+    44: ["M1928A1", "M1928A1"],
+    47: ["M1C", "M1C"],
+    48: ["M1C (Psyche Recovery)", "M1C (RP)"],
+    49: ["M21", "M21"],
+    50: ["Mosin-Nagant", "Mosin-Nagant"],
+    53: ["SVD (Night Vision)", "SVD (VN)"],
+    55: ["M60", "M60"],
+    61: ["M60 (AB)", "M60 (AB)"],
+    62: ["PKM", "PKM"],
+    64: ["MG3", "MG3"],
+    65: ["RPG-2", "RPG-2"],
+    72: ["RPG-7", "RPG-7"],
+    73: ["FIM-43", "FIM-43"],
+    74: ["XFIM-92A", "XFIM-92A"],
+    75: ["Carl Gustav M2", "Carl Gustav M2"],
+    76: ["Stun Grenade", "grenade étourdissante"],
+    81: ["Smoke Grenade", "grenade fumigène"],
+    82: ["Chaff Grenade", "grenade électronique"],
+    83: ["Smoke Grenade (Colored)", "grenade fumigène (colorée)"],
+    84: ["Support Supply Marker (Thrown)", "marqueur appro. soutien (lancé)"],
+    85: ["Support Strike Marker (Thrown)", "marqueur frappe soutien (lancé)"],
+    86: ["C4", "C4"],
+    89: ["Claymore", "claymore"],
+    90: ["Magazine", "Maquette du magazine"],
+    91: ["Magazine (fun) 1", "Maquette du magazine de loisirs 1"],
+    92: ["Magazine (fun) 2", "Maquette du magazine de loisirs 2"],
+    93: ["Magazine (fun) 3", "Maquette du magazine de loisirs 3"],
+    94: ["Magazine (fun) 4", "Maquette du magazine de loisirs 4"],
+    95: ["Anti-Tank Mine", "mine antichar"],
+    96: ["Decoy", "leurre"],
+    97: ["Aerial Mine", "mine aérienne"],
+    98: ["Support Supply Marker (Set)", "marqueur appro. soutien (placé)"],
+    100: ["Cookbook", "livre de cuisine"],
+    101: ["Support Strike Marker (Set)", "marqueur frappe soutien (placé)"],
+    102: ["Support Strike Marker (Set) 2", "marqueur frappe soutien (placé) 2"],
+    103: ["Curry Recipe", "Recette Curry"],
+    107: ["Cardboard Box Tank", "char en carton"],
+    108: ["Night Vision Goggles", "lunettes vision nocturne"],
+    109: ["Ballistic Shield", "bouclier balistique"],
+    112: ["Soliton Radar", "radar Soliton"],
+    113: ["Sonic Eye", "Sonic Eye"],
+    114: ["Canned Soda Recipe", "Recette du soda en canette"],
+    115: ["Nachos Recipe", "Recette Nachos"],
+    116: ["Box Bomb", "Boîte bombe"],
+    117: ["Stun Box", "boîte étourdissante"],
+    121: ["First-Aid Kit", "trousse de soins"],
+    125: ["Men's Cologne", "eau de cologne"],
+  };
+
   const VEH_MODELS = [
     { name: 'BTR-60PA', cls: 'armored',    id39: 0x25, id48: 18, hpMax: 3000, atk: 1500, est: true },
     { name: 'BTR-60PB', cls: 'armored',    id39: 0x26, id48: 19, hpMax: 3500, atk: 1750 },
@@ -557,6 +649,6 @@
   // items/uniforms: u32 count @0xE2FC, records 0x18 with the same first 3 fields
   const DEV = { weapons: { count: 0xBD7C, table: 0xBD80, size: 0x1C }, items: { count: 0xE2FC, table: 0xE300, size: 0x18 } };
   const SERVICE = { 2: 'COL', 3: 'TRD', 4: 'UNQ', 6: 'POW', 7: 'VOL', 8: 'NML' };
-  const api = { VEH_TEMPLATES, VEH_MODELS, VEH_CLASSES, vehClass, zipRead, zipWrite, zipFindSave, RANKS, MISSION_NAMES, PROFILE_VARS, SKILLS, SERVICE, PWSave, filenameChecksum, LAYOUT: L, ZEKE_PARTS, SOLDIER, ASSIGN, battleGrade, teamGrade };
+  const api = { BLUEPRINTS, VEH_TEMPLATES, VEH_MODELS, VEH_CLASSES, vehClass, zipRead, zipWrite, zipFindSave, RANKS, MISSION_NAMES, PROFILE_VARS, SKILLS, SERVICE, PWSave, filenameChecksum, LAYOUT: L, ZEKE_PARTS, SOLDIER, ASSIGN, battleGrade, teamGrade };
   if (typeof module !== 'undefined') module.exports = api; else root.PWCore = api;
 })(this);
