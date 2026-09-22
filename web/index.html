@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MPW Switch Save Editor</title>
+<style>
+:root{--bg:#0d0f0c;--panel:#161a14;--line:#2c3327;--text:#e6e2d3;--muted:#8d917f;--accent:#e8a33a;--accent2:#7fbf5a;--danger:#d9534f}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{display:flex;align-items:center;gap:16px;padding:14px 24px;border-bottom:1px solid var(--line);background:#10130e;position:sticky;top:0;z-index:5}
+header h1{font-size:17px;margin:0;letter-spacing:.08em;text-transform:uppercase}
+header h1 span{color:var(--accent)}
+header .spacer{flex:1}
+button{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:8px 14px;font:inherit;cursor:pointer}
+button:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);color:#1a1205;border-color:var(--accent);font-weight:600}
+button:disabled{opacity:.4;cursor:not-allowed}
+main{max-width:1100px;margin:0 auto;padding:24px}
+#drop{border:2px dashed var(--line);border-radius:12px;padding:48px 24px;text-align:center;color:var(--muted);cursor:pointer}
+#drop.hover{border-color:var(--accent);color:var(--text)}
+#drop strong{color:var(--text);display:block;font-size:18px;margin-bottom:6px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:20px 0 16px;flex-wrap:wrap}
+.tabs button{border:none;border-bottom:2px solid transparent;border-radius:0;background:none;padding:10px 14px;color:var(--muted)}
+.tabs button.on{color:var(--text);border-bottom-color:var(--accent)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.field label{display:block;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.field input{width:100%;background:#0b0d0a;color:var(--text);border:1px solid var(--line);border-radius:6px;padding:8px 10px;font:inherit}
+.field .ro{padding:8px 0;font-weight:600}
+.aitypes{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.aitypes button{min-width:140px;text-align:left}
+.aitypes button.on{border-color:var(--accent);background:#221c10}
+.aitypes b{margin-left:10px;color:var(--accent)}
+.board{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;max-width:640px}
+.cell{aspect-ratio:3/1;border-radius:3px;background:#2a2417;border:1px solid #3a3222;cursor:pointer;position:relative}
+.cell.on{background:#f6e7b8;border-color:#fff3c9;box-shadow:0 0 8px #e8a33a88}
+.cell:hover{outline:1px solid var(--accent)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 0}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em;font-weight:500}
+.note{color:var(--muted);font-size:13px;margin-top:10px}
+.badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:99px;border:1px solid var(--accent);color:var(--accent);margin-left:8px;vertical-align:middle}
+#status{color:var(--muted);font-size:13px}
+.solwrap{display:grid;grid-template-columns:minmax(260px,1fr) 2fr;gap:16px}
+.sollist{max-height:620px;overflow:auto;border:1px solid var(--line);border-radius:8px}
+.sollist div{padding:7px 10px;border-bottom:1px solid var(--line);cursor:pointer;display:flex;gap:8px}
+.sollist div:hover{background:#1e2419}.sollist div.on{background:#2a2213}
+.sollist small{color:var(--muted);margin-left:auto;white-space:nowrap}
+.filters{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.filters input,.filters select,.field select{background:#0b0d0a;color:var(--text);border:1px solid var(--line);border-radius:6px;padding:7px 9px;font:inherit}
+.grade{display:inline-block;min-width:22px;text-align:center;font-weight:700;color:var(--accent)}
+.stat{display:grid;grid-template-columns:1fr 90px 28px;gap:8px;align-items:center;margin:4px 0}
+.stat input{width:100%;background:#0b0d0a;color:var(--text);border:1px solid var(--line);border-radius:6px;padding:5px 8px;font:inherit}
+h3{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:16px 0 6px}
+@media (max-width:760px){.solwrap{grid-template-columns:1fr}}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--panel);border:1px solid var(--accent);padding:10px 16px;border-radius:8px;display:none}
+.hidden{display:none}
+@media (max-width:640px){main{padding:16px}header{padding:12px 16px}.aitypes button{min-width:0;flex:1}}
+</style>
+</head>
+<body>
+<header>
+  <h1>MPW <span>Switch</span> Save Editor</h1>
+  <span id="status"></span>
+  <div class="spacer"></div>
+  <button id="btnOpen">Ouvrir…</button>
+  <button id="btnSave" class="primary" disabled>Enregistrer</button>
+</header>
+<main>
+  <input type="file" id="file" class="hidden">
+  <div id="drop"><strong>Glisse ta sauvegarde ici</strong>ou clique pour choisir le fichier <code>STW…01</code> (dossier <code>MGS_PW_SAVE/ww</code> d'un export Checkpoint / JKSV)</div>
+
+  <div id="editor" class="hidden">
+    <div class="tabs" id="tabs">
+      <button data-t="gen" class="on">Général</button>
+      <button data-t="ai">Mémoire IA</button>
+      <button data-t="sol">Soldats</button>
+      <button data-t="veh">Garage</button>
+      <button data-t="zeke">ZEKE</button>
+    </div>
+
+    <section id="t-gen" class="panel">
+      <div class="grid2">
+        <div class="field"><label>Joueur</label><div class="ro" id="gName"></div></div>
+        <div class="field"><label>GMP</label><input id="gGmp" type="number" min="0" max="4294967295"></div>
+        <div class="field"><label>Fichier</label><div class="ro" id="gFile"></div></div>
+      </div>
+    </section>
+
+    <section id="t-ai" class="panel hidden">
+      <div class="aitypes" id="aiTypes"></div>
+      <div class="board" id="board"></div>
+      <div class="row">
+        <button id="aiAllType">Tout débloquer (ce type)</button>
+        <button id="aiAll">Tout débloquer (4 types)</button>
+        <button id="aiNoneType">Tout vider (ce type)</button>
+      </div>
+      <p class="note">Case claire = carte obtenue. Clique une case pour l'ajouter ou la retirer. Même disposition que l'écran du jeu.</p>
+    </section>
+
+
+    <section id="t-sol" class="panel hidden">
+      <div class="filters">
+        <input id="solSearch" placeholder="Rechercher un nom…">
+        <select id="solFilter"></select>
+        <button id="solAllS">Tout le monde en S</button>
+      </div>
+      <div class="solwrap">
+        <div class="sollist" id="solList"></div>
+        <div id="solEdit"><p class="note">Sélectionne un soldat.</p></div>
+      </div>
+    </section>
+    <section id="t-veh" class="panel hidden">
+      <table><thead><tr><th>#</th><th>Véhicule</th><th>Vie</th><th>État</th><th></th></tr></thead><tbody id="vehBody"></tbody></table>
+      <div class="row"><button id="vehRepair">Tout réparer (100 %)</button></div>
+      <p class="note">« Dupliquer » crée une copie à 100 % du véhicule (même modèle, mêmes rangs). Le garage est limité à 50 véhicules.</p>
+    </section>
+
+    <section id="t-zeke" class="panel hidden">
+      <h3 style="margin-top:0">Pièces en stock</h3>
+      <table><thead><tr><th>#</th><th>Pièce</th><th>État</th><th>Montée</th><th></th></tr></thead><tbody id="zekeBody"></tbody></table>
+      <div class="row">
+        <select id="zekeAddSel" class="field" style="background:#0b0d0a;color:var(--text);border:1px solid var(--line);border-radius:6px;padding:7px 9px"></select>
+        <button id="zekeAdd">Ajouter la pièce</button>
+        <button id="zekeAll">Ajouter 1 de chaque</button>
+        <button id="zekeRepair">Tout réparer (100 %)</button>
+      </div>
+      <h3>Morceaux en cours (x/5)</h3>
+      <div id="zekeFrag" class="grid2"></div>
+      <p class="note">Une pièce montée ne peut pas être supprimée ici : démonte-la d'abord dans le jeu.</p>
+    </section>
+  </div>
+</main>
+<div id="toast"></div>
+<script src="pwcore.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const TYPES=[['L','Locomotion','#58c73a'],['P','Poursuite','#d7c832'],['A','Attaque','#34c3d0'],['S','Système','#d9588f']];
+let save=null,fileName='STW.bin',aiType=0,dirty=false;
+
+function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';clearTimeout(t._h);t._h=setTimeout(()=>t.style.display='none',2600)}
+function setDirty(d){dirty=d;$('status').textContent=save?(fileName+(d?' — modifié':'')):''}
+
+function load(file){
+  const r=new FileReader();
+  r.onload=()=>{try{save=new PWCore.PWSave(r.result);fileName=file.name;render();$('drop').classList.add('hidden');$('editor').classList.remove('hidden');$('btnSave').disabled=false;setDirty(false);toast('Sauvegarde chargée')}catch(e){toast('Erreur : '+e.message)}};
+  r.readAsArrayBuffer(file);
+}
+function render(){
+  $('gName').textContent=save.playerName||'—';
+  $('gGmp').value=save.gmp;
+  $('gFile').textContent=fileName;
+  renderAI();
+  renderZeke();
+  renderSolFilter();solSel=-1;renderSolList();renderSolEdit();
+  renderVeh();
+}
+function renderAI(){
+  $('aiTypes').innerHTML=TYPES.map((t,i)=>`<button data-i="${i}" class="${i===aiType?'on':''}"><span style="color:${t[2]}">■</span> ${t[1]} <b>${save.aiCount(i)}</b></button>`).join('');
+  let h='';for(let r=0;r<10;r++)for(let c=0;c<10;c++){const idx=c*10+r;h+=`<div class="cell ${save.aiBoard(aiType,idx)?'on':''}" data-i="${idx}" title="Carte ${idx+1}"></div>`}
+  $('board').innerHTML=h;
+}
+
+let solSel=-1;
+function renderSolFilter(){const f=$('solFilter');f.innerHTML='<option value="-1">Toutes les affectations</option>'+PWCore.ASSIGN.map((a,i)=>`<option value="${i}">${a}</option>`).join('')}
+function renderSolList(){
+  const q=$('solSearch').value.trim().toUpperCase(),fa=+$('solFilter').value;
+  const list=save.soldiers().filter(s=>(!q||s.name.includes(q))&&(fa<0||s.assign===fa));
+  $('solList').innerHTML=list.map(s=>`<div data-i="${s.index}" class="${s.index===solSel?'on':''}">${s.name}<small>${PWCore.ASSIGN[s.assign]||'?'}</small></div>`).join('')||'<div>Aucun</div>';
+}
+function renderSolEdit(){
+  if(solSel<0){$('solEdit').innerHTML='<p class="note">Sélectionne un soldat.</p>';return}
+  const s=save.soldier(solSel);
+  const row=(k,v,g)=>`<div class="stat"><span>${k}</span><input data-f="${k}" type="number" min="0" max="1250" value="${v}"><span class="grade">${g}</span></div>`;
+  $('solEdit').innerHTML=`
+   <div class="grid2">
+    <div class="field"><label>Nom</label><input data-f="name" value="${s.name}" maxlength="15"></div>
+    <div class="field"><label>Affectation</label><select data-f="assign">${PWCore.ASSIGN.map((a,i)=>`<option value="${i}" ${i===s.assign?'selected':''}>${a}</option>`).join('')}</select></div>
+   </div>
+   <div class="grid2" style="margin-top:10px">
+    <div class="field"><label>Vie (actuelle / max)</label><div style="display:flex;gap:6px"><input data-f="lifeCur" type="number" value="${s.lifeCur}"><input data-f="lifeMax" type="number" value="${s.lifeMax}"></div></div>
+    <div class="field"><label>Psyché (actuelle / max)</label><div style="display:flex;gap:6px"><input data-f="psyCur" type="number" value="${s.psyCur}"><input data-f="psyMax" type="number" value="${s.psyMax}"></div></div>
+    <div class="field"><label>Hostilité</label><input data-f="hostility" type="number" value="${s.hostility}"></div>
+    <div class="field"><label>Moral</label><input data-f="morale" type="number" value="${s.morale}"></div>
+   </div>
+   <h3>Aptitudes au combat (rang ${PWCore.battleGrade(s.combat)})</h3>
+   ${Object.entries(s.battle).map(([k,v])=>row(k,v,PWCore.battleGrade(v))).join('')}
+   <h3>Équipes</h3>
+   ${Object.entries(s.team).map(([k,v])=>row(k,v,PWCore.teamGrade(v))).join('')}
+   <div class="row"><button id="solMax">Ce soldat en S partout</button></div>`;
+}
+$('solList').onclick=e=>{const d=e.target.closest('[data-i]');if(!d)return;solSel=+d.dataset.i;renderSolList();renderSolEdit()};
+$('solSearch').oninput=renderSolList;$('solFilter').onchange=renderSolList;
+$('solEdit').addEventListener('change',e=>{const f=e.target.dataset.f;if(!f)return;save.setSoldierField(solSel,f,e.target.value);setDirty(true);renderSolEdit();if(f==='name'||f==='assign')renderSolList()});
+$('solEdit').addEventListener('click',e=>{if(e.target.id!=='solMax')return;maxSoldier(solSel);renderSolEdit();setDirty(true)});
+function maxSoldier(i){const s=save.soldier(i);for(const k in s.battle)save.setSoldierField(i,k,1250);for(const k in s.team)save.setSoldierField(i,k,1250);save.setSoldierField(i,'lifeMax',9999);save.setSoldierField(i,'lifeCur',9999);save.setSoldierField(i,'psyMax',9999);save.setSoldierField(i,'psyCur',9999)}
+$('solAllS').onclick=()=>{if(!confirm('Passer tous les soldats en S (combat + équipes) ?'))return;save.soldiers().forEach(s=>maxSoldier(s.index));renderSolEdit();setDirty(true);toast('Tous les soldats sont en S')};
+
+function renderZeke(){
+  const parts=save.zekeParts();
+  $('zekeBody').innerHTML=parts.map(p=>`<tr><td>${p.index+1}</td><td>${p.name}</td><td>${p.condition} %</td><td>${p.equipped?'oui':''}</td><td>${p.equipped?'':`<button data-del="${p.index}">Supprimer</button>`}</td></tr>`).join('')||'<tr><td colspan=5>Aucune pièce</td></tr>';
+  $('zekeAddSel').innerHTML=PWCore.ZEKE_PARTS.map((p,i)=>`<option value="${i}">${p.name}${p.main?'':' (option)'}</option>`).join('');
+  $('zekeFrag').innerHTML=save.zekeFragments().map((f,i)=>`<div class="field"><label>${f.name}</label><input type="number" min="0" max="4" data-frag="${i}" value="${f.value}"></div>`).join('');
+}
+$('zekeBody').onclick=e=>{const b=e.target.closest('[data-del]');if(!b)return;try{save.removeZekePart(+b.dataset.del);renderZeke();setDirty(true)}catch(err){toast(err.message)}};
+$('zekeAdd').onclick=()=>{const p=PWCore.ZEKE_PARTS[+$('zekeAddSel').value];try{save.addZekePart(p.kind,p.sub);renderZeke();setDirty(true)}catch(err){toast(err.message)}};
+$('zekeAll').onclick=()=>{try{PWCore.ZEKE_PARTS.forEach(p=>save.addZekePart(p.kind,p.sub));renderZeke();setDirty(true)}catch(err){toast(err.message)}};
+$('zekeRepair').onclick=()=>{save.repairZeke();renderZeke();setDirty(true);toast('Toutes les pièces à 100 %')};
+$('zekeFrag').addEventListener('change',e=>{const i=e.target.dataset.frag;if(i===undefined)return;save.setZekeFragment(+i,+e.target.value);renderZeke();setDirty(true)});
+
+function renderVeh(){
+  $('vehBody').innerHTML=save.vehicles().map(v=>`<tr><td>${v.index+1}</td><td>${v.name}</td><td><input type="number" data-hp="${v.index}" value="${v.hp}" min="1" max="${v.hpMax}" style="width:90px;background:#0b0d0a;color:var(--text);border:1px solid var(--line);border-radius:6px;padding:5px 8px"> / ${v.hpMax}</td><td>${Math.round(100*v.hp/v.hpMax)} %</td><td><button data-dup="${v.index}">Dupliquer</button></td></tr>`).join('')||'<tr><td colspan=5>Aucun véhicule</td></tr>';
+}
+$('vehBody').addEventListener('change',e=>{const i=e.target.dataset.hp;if(i===undefined)return;save.setVehicleHp(+i,+e.target.value);renderVeh();setDirty(true)});
+$('vehBody').addEventListener('click',e=>{const b=e.target.closest('[data-dup]');if(!b)return;try{save.duplicateVehicle(+b.dataset.dup);renderVeh();setDirty(true);toast('Véhicule dupliqué')}catch(err){toast(err.message)}});
+$('vehRepair').onclick=()=>{save.repairVehicles();renderVeh();setDirty(true);toast('Véhicules réparés')};
+$('aiTypes').onclick=e=>{const b=e.target.closest('button');if(!b)return;aiType=+b.dataset.i;renderAI()};
+$('board').onclick=e=>{const c=e.target.closest('.cell');if(!c)return;const i=+c.dataset.i;save.setAiBoard(aiType,i,!save.aiBoard(aiType,i));renderAI();setDirty(true)};
+$('aiAllType').onclick=()=>{for(let i=0;i<100;i++)save.setAiBoard(aiType,i,true);renderAI();setDirty(true)};
+$('aiNoneType').onclick=()=>{for(let i=0;i<100;i++)save.setAiBoard(aiType,i,false);renderAI();setDirty(true)};
+$('aiAll').onclick=()=>{for(let t=0;t<4;t++)for(let i=0;i<100;i++)save.setAiBoard(t,i,true);renderAI();setDirty(true)};
+$('gGmp').onchange=e=>{save.gmp=Number(e.target.value);$('gGmp').value=save.gmp;setDirty(true)};
+$('tabs').onclick=e=>{const b=e.target.closest('button');if(!b)return;document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));['gen','ai','sol','veh','zeke'].forEach(t=>$('t-'+t).classList.toggle('hidden',t!==b.dataset.t))};
+$('btnOpen').onclick=()=>$('file').click();
+$('drop').onclick=()=>$('file').click();
+$('file').onchange=e=>e.target.files[0]&&load(e.target.files[0]);
+['dragover','dragenter'].forEach(ev=>$('drop').addEventListener(ev,e=>{e.preventDefault();$('drop').classList.add('hover')}));
+['dragleave','drop'].forEach(ev=>$('drop').addEventListener(ev,e=>{e.preventDefault();$('drop').classList.remove('hover')}));
+$('drop').addEventListener('drop',e=>e.dataTransfer.files[0]&&load(e.dataTransfer.files[0]));
+$('btnSave').onclick=()=>{try{const out=save.build();const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([out]));a.download=fileName;a.click();setDirty(false);toast('Fichier généré : '+fileName)}catch(e){toast('Erreur : '+e.message)}};
+window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue=''}});
+</script>
+</body>
+</html>
