@@ -101,6 +101,11 @@ window.PW_FR = {
   'no mission in my table lists it': 'aucune mission de ma table ne le mentionne',
   'Not tied to a mission': 'Sans mission associée',
   'Clear every NEW badge': 'Enlever tous les badges NOUVEAU',
+  '72 slots, found by diffing two saves': '72 emplacements, trouvés en comparant deux sauvegardes',
+  'Mark every Outer Op cleared': 'Marquer toutes les Ops extérieures comme terminées',
+  '{n} Outer Ops marked cleared': '{n} Ops extérieures marquées terminées',
+  'Every Outer Op was already cleared': 'Toutes les Ops extérieures étaient déjà terminées',
+  'Outer Ops are 72 one-byte slots at 0x14729; 0x84 means cleared.': 'Les Ops extérieures sont 72 emplacements d’un octet à 0x14729 ; 0x84 = terminée.',
   '{n} NEW badges cleared': '{n} badges NOUVEAU enlevés', 'No NEW badge left': 'Plus aucun badge NOUVEAU',
   'This list is rebuilt from the missions, not read from the save, so it is <b>incomplete</b>: a check against a real R&amp;D “Key items” screen found 19 blueprints the game hands out without any mission listing them (the magazines, the cookbook, the Kampfpistole, the recipes…). Until the save’s own blueprint table is located, treat a ❌ as “probably missing”, not as proof.':
     'Cette liste est reconstruite à partir des missions, elle n’est pas lue dans la sauvegarde, donc elle est <b>incomplète</b> : une vérification sur un vrai écran R&amp;D « Objets clés » a montré 19 plans que le jeu donne sans qu’aucune mission ne les mentionne (les magazines, le livre de recettes, le Kampfpistole, les recettes…). Tant que le tableau des plans de la sauvegarde n’est pas localisé, considère un ❌ comme « probablement manquant », pas comme une preuve.', 'Search a blueprint…': 'Chercher un plan…',

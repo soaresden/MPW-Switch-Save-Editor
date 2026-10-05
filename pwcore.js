@@ -5,6 +5,7 @@
   const L = {
     NAME: 0x188, GMP: 0xB570,
     AI_A: 0x13860, AI_B: 0x9D48, AI_TYPES: 4, AI_PER: 100,
+    OUTER: 0x14729, OUTER_N: 72, OUTER_DONE: 0x84,
     VEH_COUNT: 0x115D8,
     ZEKE_COUNT: 0x1385C, ZEKE_TABLE: 0x139F4, ZEKE_SIZE: 12, ZEKE_MAX: 100, ZEKE_FRAG: 0x13784,
     STAFF: 0x1FA80, STAFF_SIZE: 0xA0, STAFF_COUNT: 350, STAFF_BOUNDARY: 0x1FA70, VEH_TABLE: 0x115E0, VEH_SIZE: 0xA0, VEH_NAME: 0x28, VEH_MAX: 50, VEH_UID: 0x18, VEH_SQUAD: 0x1C, VEH_HP: 0x4A, VEH_HPMAX: 0x4C, VEH_FLAGS: 0x3C, VEH_DEPLOYED: 0x80,
@@ -474,6 +475,21 @@
           if ((v & 0x40000) && !(v & 0x20000)) { this.dv.setUint32(o, (v | 0x20000) >>> 0, true); n++; }
         }
       }
+      return n;
+    }
+    /** Outer Ops: 72 one-byte slots. 0x84 = cleared; the slots still open in a reference
+        save read 0x41 and 0x01, so the other values are the not-yet-cleared states. */
+    outerOps() {
+      const out = [];
+      for (let i = 0; i < L.OUTER_N; i++) {
+        const v = this.data[L.OUTER + i];
+        out.push({ index: i, value: v, done: v === L.OUTER_DONE });
+      }
+      return out;
+    }
+    clearOuterOps() {
+      let n = 0;
+      for (let i = 0; i < L.OUTER_N; i++) if (this.data[L.OUTER + i] !== L.OUTER_DONE) { this.data[L.OUTER + i] = L.OUTER_DONE; n++; }
       return n;
     }
     /** Blueprints ("Design Specs") read from the save: the ids this build can name. */

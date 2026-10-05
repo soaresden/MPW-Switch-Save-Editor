@@ -85,6 +85,7 @@ function renderDev() {
   $('devInfo').textContent = n.length ? T('{n} development(s) in progress ({p})', { n: n.length, p: n.map(d => d.progress + ' %').join(', ') }) : T('No development in progress');
   $('devFinish').disabled = !n.length;
 }
+$('outerAll').onclick = () => { const n = save.clearOuterOps(); renderDone(); setDirty(true); toast(n ? T('{n} Outer Ops marked cleared', { n }) : T('Every Outer Op was already cleared')); };
 $('devSeen').onclick = () => { const n = save.markAllSeen(); setDirty(true); toast(n ? T('{n} NEW badges cleared', { n }) : T('No NEW badge left')); };
 $('devFinish').onclick = () => { const n = save.finishDevelopments(); renderDev(); setDirty(true); toast(T('{n} development(s) finished', { n })); };
 $('gVars').addEventListener('change', e => { const id = e.target.dataset.var; if (!id) return; save.varSet(+id, +e.target.value); e.target.value = save.varGet(+id); setDirty(true); });
@@ -702,7 +703,7 @@ function renderDone() {
     card(T('ZEKE parts'), zAll.length - zAll.filter(p => !zHave.has(p.name)).length, zAll.length, ''),
     card(T('Known vehicle models'), vAll.length - vMiss.length, vAll.length, T('models I can add from the garage')),
     card(T('AI Memory boards'), aiGot, 400, ''),
-    card(T('Outer Ops'), 0, 0, T('not located in the save yet'), true)
+    card(T('Outer Ops'), save.outerOps().filter(o => o.done).length, PWCore.LAYOUT.OUTER_N, T('72 slots, found by diffing two saves'))
   ].join('');
 
   let list = rows;
@@ -729,7 +730,7 @@ function renderDone() {
     `<div class="collgrp"><h4>${T('ZEKE parts still missing')}</h4>${chips(zAll.filter(p => !zHave.has(p.name)).map(p => p.name), false)}</div>` +
     `<div class="collgrp"><h4>${T('Vehicle models not in the garage')}</h4>${chips(vMiss, false)}</div>` +
     `<p class="note">${T('Weapons and items cannot be listed by name yet: the save stores R&D lines by id, without a name. That mapping is the last missing piece.')}</p>` +
-    `<p class="note">${T('Outer Ops: I have not found where the save stores its progress. Send me two zips — one before an Outer Ops battle, one just after — and I will locate it in one pass.')}</p>`;
+    `<p class="note">${T('Outer Ops are 72 one-byte slots at 0x14729; 0x84 means cleared.')}</p>`;
   renderBp();
 }
 $('t-done').addEventListener('click', e => {

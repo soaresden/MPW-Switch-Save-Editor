@@ -190,3 +190,14 @@ Observed grade scale for the 4th grade (0x74), which differs by vehicle class:
 | Armored (LAV, BTR) | B | B | - | B | A | S |
 | Tank (MBTk-70) | - | - | A | - | - | S |
 | Helicopter | C | - | - | - | - | C (0x74 has no effect; 0x68 = 9999 gives S) |
+
+## Outer Ops
+
+| Offset | Content |
+|---|---|
+| 0x14729 | 72 one-byte slots, one per Outer Ops mission |
+
+`0x84` is a cleared mission. In a save with two missions still open those two slots read
+`0x41` and `0x01`, and both became `0x84` once the player finished them, so the lower values
+are the not-yet-cleared states; their exact meaning is not pinned down. Found by diffing a
+save taken before the last two missions against one taken after.
