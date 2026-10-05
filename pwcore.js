@@ -423,6 +423,9 @@
         if (time === 0xFFFFFFFF && rank === 0xFFFF) continue;
         if (time === 0 && rank === 0 && i >= 270) continue; // zero-filled tail
         res.push({ index: i, name: MISSION_NAMES[i] || ('Mission #' + i), checked: MISSION_CHECKED.has(i),
+          /* Some missions are played but keep no time (the game shows no clock for them),
+             so a real rank is proof enough that the mission was completed. */
+          done: time !== 0xFFFFFFFF || rank <= 5,
           time: time === 0xFFFFFFFF ? null : time / MIS_TICKS,
           kills: dv.getUint16(MIS.KILLS + 2 * i, true), alerts: dv.getUint16(MIS.ALERTS + 2 * i, true), rank });
       }
@@ -440,7 +443,7 @@
     allMissionsS(clean) {
       let n = 0;
       for (const m of this.missions()) {
-        if (m.time === null) continue;
+        if (!m.done) continue;
         this.setMission(m.index, 'rank', 0); n++;
         if (clean) { this.setMission(m.index, 'kills', 0); this.setMission(m.index, 'alerts', 0); }
       }

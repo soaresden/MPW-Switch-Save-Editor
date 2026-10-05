@@ -295,11 +295,11 @@ function misStatus(kind, n) {
   const slot = kind === 'main' ? n : slotForExtra(n);
   if (!slot) return { k: 'unknown', txt: '?', cls: 'unk' };
   const m = save.missions().find(x => x.index === slot);
-  const done = m && m.time !== null;
+  const done = !!(m && m.done);
   const entry = (REF()[kind])[n - 1];
   const hasS = entry.s && entry.s.length;
   if (!done) {
-    const maxDone = Math.max(...save.missions().filter(x => x.index <= 33 && x.time !== null).map(x => x.index), 0);
+    const maxDone = Math.max(...save.missions().filter(x => x.index <= 33 && x.done).map(x => x.index), 0);
     if (kind === 'main' && slot < maxDone) return { k: 'skipped', txt: '⚠ ' + T('skipped'), cls: 'kov' };
     return { k: 'todo', txt: '— ' + T('not done'), cls: 'unk' };
   }
@@ -388,7 +388,7 @@ function blueprintState(bp) {
   else if (extra) slot = slotForExtra(+extra[1]) || null;
   if (slot === null) return { k: 'unknown', txt: '?', title: T('Mission not identified in the save') };
   const m = save.missions().find(x => x.index === slot);
-  const done = !!(m && m.time !== null);
+  const done = !!(m && m.done);
   if (!done) return { k: 'no', txt: '❌', title: T('Mission {n} not finished', { n: slot }) };
   return stage
     ? { k: 'maybe', txt: '✅?', title: T('Mission finished, but the blueprint is picked up in the stage — check in game') }
@@ -522,7 +522,7 @@ function mainOpRows() {
   const R = REF(); if (!R || !save) return [];
   const byIdx = Object.fromEntries(save.missions().map(m => [m.index, m]));
   return R.main.map((e, i) => {
-    const m = byIdx[e.n] || null, done = !!(m && m.time !== null);
+    const m = byIdx[e.n] || null, done = !!(m && m.done);
     return { n: e.n, name: (LANG === 'fr' ? (e.fr || e.en) : e.en), ch: chLabel(i), done, rank: done ? m.rank : null, ref: e, unranked: e.n === 26 };
   });
 }
@@ -553,7 +553,7 @@ function blueprintList() {
       const cur = (CUR[kind] || EN[kind])[i] || e;
       const slot = kind === 'main' ? e.n : slotForExtra(e.n);
       const m = slot ? byIdx[slot] : null;
-      const done = !!(m && m.time !== null);
+      const done = !!(m && m.done);
       const src = (kind === 'main' ? T('Main Op {n}', { n: e.n }) : T('Extra Op {n}', { n: String(e.n).padStart(3, '0') }))
         + ' · ' + ((LANG === 'fr' ? (cur.fr || cur.en) : cur.en) || e.en);
       for (const field of ['rw', 's', 'sp']) {
