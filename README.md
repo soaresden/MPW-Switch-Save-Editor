@@ -54,7 +54,8 @@ checks, mission records, R&D tables, vehicle records and the vehicle model-id ta
 - Encryption scheme and integrity checks were first documented by
   [ShadowLite1/PeaceWalkerSaveEditor](https://github.com/ShadowLite1/PeaceWalkerSaveEditor) (PC).
   This project re-implements them and adds Switch support.
-- Unlock conditions and rewards cross-checked against the Metal Gear Wiki (Fandom),
+- Unlock conditions and rewards cross-checked against the official Prima strategy guide
+  (facts only; none of its text, tables or artwork is reproduced here), the Metal Gear Wiki (Fandom),
   the Steam "Peace Walker Complete Guide", Dayngls guides and jeuxvideo.com.
 
 ## License
