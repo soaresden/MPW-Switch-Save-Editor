@@ -129,7 +129,7 @@ window.PW_FR = {
   'Main Ops — rank goals': 'Ops principales — objectifs de rang', 'Collections': 'Collections',
   'MAIN OP': 'OP PRINCIPALE', 'MISSING FOR A': 'MANQUE POUR A', 'MISSING FOR S': 'MANQUE POUR S',
   'Main Ops finished': 'Ops principales terminées', 'Main Ops at A or better': 'Ops principales en A ou mieux', 'Main Ops at S': 'Ops principales en S',
-  'Main Op 26 has no rank': 'l’Op principale 26 n’a pas de rang', 'goal: every Main Op at A': 'objectif : toutes en A', 'goal: BIG BOSS title': 'objectif : titre BIG BOSS',
+  'Main Op 23 is never ranked': 'l’Op principale 23 n’est jamais notée', 'goal: every Main Op at A': 'objectif : toutes en A', 'goal: BIG BOSS title': 'objectif : titre BIG BOSS',
   'ZEKE parts': 'Pièces ZEKE', 'Known vehicle models': 'Modèles de véhicules connus', 'models I can add from the garage': 'modèles que je sais ajouter depuis le garage',
   'Weapons developed': 'Armes développées', 'Items developed': 'Objets développés', 'R&D lines present in the save': 'lignes R&D présentes dans la sauvegarde',
   'AI Memory boards': 'Cartes Mémoire IA',

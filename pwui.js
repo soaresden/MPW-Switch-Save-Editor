@@ -524,7 +524,9 @@ function mainOpRows() {
   const byIdx = Object.fromEntries(save.missions().map(m => [m.index, m]));
   return R.main.map((e, i) => {
     const m = byIdx[e.n] || null, done = !!(m && m.done);
-    return { n: e.n, name: (LANG === 'fr' ? (e.fr || e.en) : e.en), ch: chLabel(i), done, rank: done ? m.rank : null, ref: e, unranked: e.n === 26 };
+    /* Mission 23 keeps no record at all: in a finished save its slot reads like Mission 00
+       (the Opening cutscene) — no time and no rank — so the game never ranks it. */
+    return { n: e.n, name: (LANG === 'fr' ? (e.fr || e.en) : e.en), ch: chLabel(i), done, rank: done ? m.rank : null, ref: e, unranked: e.n === 23 };
   });
 }
 /** Chapter label of Main Op #i, in the current language. */
@@ -694,7 +696,7 @@ function renderDone() {
   const aiGot = [0, 1, 2, 3].reduce((a, t) => a + save.aiCount(t), 0);
 
   $('doneCards').innerHTML = [
-    card(T('Main Ops finished'), fin, rows.length, T('Main Op 26 has no rank')),
+    card(T('Main Ops finished'), fin, rows.length, T('Main Op 23 is never ranked')),
     card(T('Main Ops at A or better'), atA, ranked.length, T('goal: every Main Op at A')),
     card(T('Main Ops at S'), atS, ranked.length, T('goal: BIG BOSS title')),
     card(T('Blueprints'), bpOk, bps.length, T('{s} read in the save, + {n} probably picked up in a stage', { s: bps.filter(b => b.sure).length, n: bpMaybe })),
