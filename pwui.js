@@ -678,6 +678,61 @@ function renderBp() {
     || `<p class="note">${T('Nothing left here — well done.')}</p>`;
 }
 
+/* --- uniforms: name / condition / what the save can say -------------------- */
+const UNI_DLC = /DLC package|Master Collection|HD Edition/i;
+const UNI_CODE = /UNIQLO|HORI|WALKMAN collaboration|pass ?code|UPC/i;
+/** What this build can actually tell you about one uniform. */
+function uniformState(u) {
+  const t = u.u || '';
+  const mainN = (/Main Ops? 0*(\d+)/i.exec(t) || [])[1];
+  const extraN = (/Extra Ops? 0*(\d+)/i.exec(t) || [])[1];
+  const needS = /S Rank|S rank/.test(t);
+  const inStage = /Found in stage/i.test(t);
+  const mis = n => save.missions().find(x => x.index === +n);
+  if (/at start/i.test(t)) return { i: '✅', k: 'ok', w: T('owned from the start') };
+  if (UNI_DLC.test(t)) return { i: '✅', k: 'ok', w: T('bundled with the Master Collection') };
+  if (UNI_CODE.test(t)) return { i: '❔', k: 'unknown', w: T('promotional code — the save cannot say') };
+  if (/every Main Op and every Extra Op/i.test(t)) {
+    const R = REF(); const left = R.main.filter(m => { const x = mis(m.n); return m.n !== 23 && !(x && x.done); }).length;
+    return left ? { i: '❌', k: 'todo', w: T('{n} Main Ops still to clear, and every Extra Op', { n: left }) }
+                : { i: '❔', k: 'unknown', w: T('every Main Op is cleared; I cannot check the Extra Ops yet') };
+  }
+  if (mainN) {
+    const m = mis(mainN);
+    if (!m || !m.done) return { i: '❌', k: 'todo', w: T('Main Op {n} not finished', { n: +mainN }) };
+    if (inStage) return { i: '🔍', k: 'maybe', w: T('Main Op {n} is done, but this one is picked up in the stage', { n: +mainN }) };
+    if (needS) return m.rank === 0 ? { i: '✅', k: 'ok', w: T('Main Op {n} at S', { n: +mainN }) }
+                                   : { i: '❌', k: 'todo', w: T('needs Main Op {n} at S — you are at {r}', { n: +mainN, r: PWCore.RANKS[m.rank] }) };
+    return { i: '✅', k: 'ok', w: T('Main Op {n} finished', { n: +mainN }) };
+  }
+  if (extraN) {
+    const slot = slotForExtra(+extraN);
+    if (!slot) return { i: '❔', k: 'unknown', w: T('Extra Op {n} — I cannot find its slot in the save yet', { n: +extraN }) };
+    const m = mis(slot);
+    if (!m || !m.done) return { i: '❌', k: 'todo', w: T('Extra Op {n} not finished', { n: +extraN }) };
+    if (needS) return m.rank === 0 ? { i: '✅', k: 'ok', w: T('Extra Op {n} at S', { n: +extraN }) }
+                                   : { i: '❌', k: 'todo', w: T('needs Extra Op {n} at S — you are at {r}', { n: +extraN, r: PWCore.RANKS[m.rank] }) };
+    return { i: '✅', k: 'ok', w: T('Extra Op {n} finished', { n: +extraN }) };
+  }
+  return { i: '❔', k: 'unknown', w: T('condition not machine-readable yet') };
+}
+let uniFilter = 'todo';
+function renderUni() {
+  const R = REF(); if (!R || !save) return;
+  const all = R.uniforms.map(u => ({ ...u, st: uniformState(u) }));
+  let list = all;
+  if (uniFilter === 'todo') list = all.filter(u => u.st.k !== 'ok');
+  const q = ($('uniSearch').value || '').trim().toLowerCase();
+  if (q) list = list.filter(u => ((LANG === 'fr' ? u.fr : u.n) + ' ' + u.n + ' ' + u.u).toLowerCase().includes(q));
+  $('uniCount').textContent = list.length + ' / ' + all.length;
+  $('doneUni').innerHTML = `<div class="gtable-wrap" style="max-height:420px"><table class="gtable"><thead>
+    <tr><th></th><th class="l">${T('UNIFORM')}</th><th class="l">${T('HOW TO UNLOCK')}</th><th class="l">${T('IN YOUR SAVE')}</th></tr></thead><tbody>
+    ${list.map(u => `<tr><td class="c ${u.st.k === 'ok' ? 'okv' : u.st.k === 'todo' ? 'kov' : 'unk'}">${u.st.i}</td>
+      <td class="l"><b>${esc(LANG === 'fr' && u.fr ? u.fr : u.n)}</b>${LANG === 'fr' && u.fr ? '<br><span class="bpsrc">' + esc(u.n) + '</span>' : ''}</td>
+      <td class="l">${esc(u.u)}</td><td class="l"><span class="bpsrc">${esc(u.st.w)}</span></td></tr>`).join('')
+      || `<tr><td colspan="4">${T('Nothing left here — well done.')}</td></tr>`}</tbody></table></div>`;
+}
+
 function renderDone() {
   if (!save || !REF()) return;
   const rows = mainOpRows();
@@ -734,6 +789,7 @@ function renderDone() {
     `<p class="note">${T('Weapons and items cannot be listed by name yet: the save stores R&D lines by id, without a name. That mapping is the last missing piece.')}</p>` +
     `<p class="note">${T('Outer Ops are 72 one-byte slots at 0x14729; 0x84 means cleared.')}</p>`;
   renderBp();
+  renderUni();
 }
 $('t-done').addEventListener('click', e => {
   const d = e.target.closest('[data-dq]'), b = e.target.closest('[data-bq]');
@@ -741,6 +797,13 @@ $('t-done').addEventListener('click', e => {
   else if (b) { bpFilter = b.dataset.bq; $('t-done').querySelectorAll('[data-bq]').forEach(x => x.classList.toggle('on', x === b)); renderBp(); }
 });
 $('bpSearch').oninput = renderBp;
+$('uniSearch').oninput = renderUni;
+$('t-done').addEventListener('click', e => {
+  const u = e.target.closest('[data-uq]'); if (!u) return;
+  uniFilter = u.dataset.uq;
+  $('t-done').querySelectorAll('[data-uq]').forEach(x => x.classList.toggle('on', x === u));
+  renderUni();
+});
 
 /* ---------- tabs, files ---------- */
 $('tabs').onclick = e => { const b = e.target.closest('button'); if (!b) return; document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x === b)); ['gen', 'ai', 'sol', 'veh', 'zeke', 'mis', 'ref', 'done'].forEach(t => $('t-' + t).classList.toggle('hidden', t !== b.dataset.t)); if (b.dataset.t === 'done' && save) renderDone(); };
